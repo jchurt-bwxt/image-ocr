@@ -1,0 +1,512 @@
+{
+  "image": "C:\\Users\\jchurt\\image_text_detector\\test2.png",
+  "prompt": "metal identification nameplate",
+  "model": "C:\\Users\\jchurt\\Downloads\\grounding-dino-tiny",
+  "threshold": 0.15,
+  "detections": [
+    {
+      "id": 1,
+      "label": "metal identification nameplate",
+      "confidence": 0.3669016361236572,
+      "box_xyxy": [
+        10,
+        16,
+        663,
+        409
+      ],
+      "text": "tD EBJB 81 R 325 W8, UIE 478 Eacic Ci WFI WLLSE FFIS Haaez Vi5t [ODD JFS FeloD CiprEri HPS Sr LrJn WihSl;d HtFs TYPE 1 ENCLCSJRE MILLTRONICS MANUFACTURING CO CORPORAIE HEADQUARTERS J40 Ml Ur WACEM M 87 924214i0 G 9932482697 Wr MIDXE",
+      "ocr_lines": [
+        {
+          "text": "tD",
+          "confidence": 0.049529621205181465
+        },
+        {
+          "text": "EBJB",
+          "confidence": 0.26241904497146606
+        },
+        {
+          "text": "81 R",
+          "confidence": 0.18196260918007356
+        },
+        {
+          "text": "325",
+          "confidence": 0.3414641065758638
+        },
+        {
+          "text": "W8, UIE",
+          "confidence": 0.03920775097108358
+        },
+        {
+          "text": "478",
+          "confidence": 0.10841748118400574
+        },
+        {
+          "text": "Eacic Ci",
+          "confidence": 0.011435339210973087
+        },
+        {
+          "text": "WFI WLLSE",
+          "confidence": 0.01356821651212391
+        },
+        {
+          "text": "FFIS",
+          "confidence": 0.04688212194815949
+        },
+        {
+          "text": "Haaez",
+          "confidence": 0.08087608643958942
+        },
+        {
+          "text": "Vi5t [ODD",
+          "confidence": 0.03767412536900758
+        },
+        {
+          "text": "JFS",
+          "confidence": 0.2121215516629499
+        },
+        {
+          "text": "FeloD CiprEri",
+          "confidence": 0.006945219604338977
+        },
+        {
+          "text": "HPS",
+          "confidence": 0.1563969321114022
+        },
+        {
+          "text": "Sr LrJn WihSl;d",
+          "confidence": 0.0023511997245316903
+        },
+        {
+          "text": "HtFs",
+          "confidence": 0.029859310016036034
+        },
+        {
+          "text": "TYPE 1 ENCLCSJRE",
+          "confidence": 0.2242037194626933
+        },
+        {
+          "text": "MILLTRONICS MANUFACTURING CO",
+          "confidence": 0.5905877385817332
+        },
+        {
+          "text": "CORPORAIE HEADQUARTERS",
+          "confidence": 0.5899649153371809
+        },
+        {
+          "text": "J40 Ml Ur",
+          "confidence": 0.007844697420212996
+        },
+        {
+          "text": "WACEM",
+          "confidence": 0.4280820191893746
+        },
+        {
+          "text": "M",
+          "confidence": 0.13649035385974262
+        },
+        {
+          "text": "87",
+          "confidence": 0.9543406462389954
+        },
+        {
+          "text": "924214i0",
+          "confidence": 0.5091876266864913
+        },
+        {
+          "text": "G",
+          "confidence": 0.09754729703839704
+        },
+        {
+          "text": "9932482697",
+          "confidence": 0.09698073923186984
+        },
+        {
+          "text": "Wr",
+          "confidence": 0.017944055284134553
+        },
+        {
+          "text": "MIDXE",
+          "confidence": 0.011371800643664734
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "label": "metal identification nameplate",
+      "confidence": 0.3289177119731903,
+      "box_xyxy": [
+        10,
+        17,
+        663,
+        409
+      ],
+      "text": "tu \"LI' EBUB 93 R es W8; UE Stit; Cna NFI WlcBE FFIS Hariz VaoET [OWD FFS FuxloD CPEI HPS Sori URJIT WIIHSI;D) Hs TYPE | ECLCSURE MILLTRONICS MANUFACTURING CO CORPORAIE HEADAUARTERS 140 Mal Lr HACCM K5 87 84214i0 Gn 932,482697 Kmn Lolxh",
+      "ocr_lines": [
+        {
+          "text": "tu",
+          "confidence": 0.12404677671202996
+        },
+        {
+          "text": "\"LI'",
+          "confidence": 0.23271051049232483
+        },
+        {
+          "text": "EBUB",
+          "confidence": 0.5201423764228821
+        },
+        {
+          "text": "93 R",
+          "confidence": 0.18389922859453206
+        },
+        {
+          "text": "es",
+          "confidence": 0.32534699078737983
+        },
+        {
+          "text": "W8; UE",
+          "confidence": 0.11453766664148704
+        },
+        {
+          "text": "Stit; Cna",
+          "confidence": 0.016247670362270192
+        },
+        {
+          "text": "NFI WlcBE",
+          "confidence": 0.007544477870321674
+        },
+        {
+          "text": "FFIS",
+          "confidence": 0.23788012564182281
+        },
+        {
+          "text": "Hariz",
+          "confidence": 0.31605130080666166
+        },
+        {
+          "text": "VaoET [OWD",
+          "confidence": 0.01638882349032032
+        },
+        {
+          "text": "FFS",
+          "confidence": 0.4430156054984903
+        },
+        {
+          "text": "FuxloD CPEI",
+          "confidence": 0.025985737960441537
+        },
+        {
+          "text": "HPS",
+          "confidence": 0.15975329379964767
+        },
+        {
+          "text": "Sori URJIT WIIHSI;D)",
+          "confidence": 0.0035834959879948937
+        },
+        {
+          "text": "Hs",
+          "confidence": 0.21209113854601966
+        },
+        {
+          "text": "TYPE | ECLCSURE",
+          "confidence": 0.27810280517344155
+        },
+        {
+          "text": "MILLTRONICS MANUFACTURING CO",
+          "confidence": 0.734871489872683
+        },
+        {
+          "text": "CORPORAIE HEADAUARTERS",
+          "confidence": 0.492055008163424
+        },
+        {
+          "text": "140 Mal Lr",
+          "confidence": 0.04857304107165136
+        },
+        {
+          "text": "HACCM",
+          "confidence": 0.2839245402932807
+        },
+        {
+          "text": "K5",
+          "confidence": 0.007817359625010461
+        },
+        {
+          "text": "87",
+          "confidence": 0.2586162665666833
+        },
+        {
+          "text": "84214i0",
+          "confidence": 0.4041154760182181
+        },
+        {
+          "text": "Gn",
+          "confidence": 0.5100679476925268
+        },
+        {
+          "text": "932,482697",
+          "confidence": 0.08812648993637624
+        },
+        {
+          "text": "Kmn",
+          "confidence": 0.13692297390248093
+        },
+        {
+          "text": "Lolxh",
+          "confidence": 0.040715529342733155
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "label": "metal identification nameplate",
+      "confidence": 0.17938804626464844,
+      "box_xyxy": [
+        0,
+        1,
+        665,
+        427
+      ],
+      "text": "tu \"L' EBUB 93 R 35 W8; UE 778 Srtit; Cna NFI WlcBE #c FFIS Hariz VaoET [OWD JFS FuxloD CPEI HMPS Str UkJn_WIIHSTE;D HTs TYPE | ECLCSURE MILLTRONICS MANUFACTURING CO, CORPORAIE HEADAUARTERS 140 Mal Lr HACCM K5 92414i0 G 932,42.657 KMALIUSH",
+      "ocr_lines": [
+        {
+          "text": "tu",
+          "confidence": 0.12404677671202996
+        },
+        {
+          "text": "\"L'",
+          "confidence": 0.40029110033442666
+        },
+        {
+          "text": "EBUB",
+          "confidence": 0.5201423764228821
+        },
+        {
+          "text": "93 R",
+          "confidence": 0.18389922859453206
+        },
+        {
+          "text": "35",
+          "confidence": 0.1905513169389465
+        },
+        {
+          "text": "W8; UE",
+          "confidence": 0.11453766664148704
+        },
+        {
+          "text": "778",
+          "confidence": 0.06772710882314825
+        },
+        {
+          "text": "Srtit; Cna",
+          "confidence": 0.009041081750943017
+        },
+        {
+          "text": "NFI WlcBE",
+          "confidence": 0.007544477870321674
+        },
+        {
+          "text": "#c",
+          "confidence": 0.016524870359776823
+        },
+        {
+          "text": "FFIS",
+          "confidence": 0.23788012564182281
+        },
+        {
+          "text": "Hariz",
+          "confidence": 0.31605130080666166
+        },
+        {
+          "text": "VaoET [OWD",
+          "confidence": 0.01638882349032032
+        },
+        {
+          "text": "JFS",
+          "confidence": 0.2602302320847622
+        },
+        {
+          "text": "FuxloD CPEI",
+          "confidence": 0.025985737960441537
+        },
+        {
+          "text": "HMPS",
+          "confidence": 0.08166779577732086
+        },
+        {
+          "text": "Str UkJn_WIIHSTE;D",
+          "confidence": 0.004914259952780361
+        },
+        {
+          "text": "HTs",
+          "confidence": 0.036666527735329704
+        },
+        {
+          "text": "TYPE | ECLCSURE",
+          "confidence": 0.27810280517344155
+        },
+        {
+          "text": "MILLTRONICS MANUFACTURING CO,",
+          "confidence": 0.6380001640670074
+        },
+        {
+          "text": "CORPORAIE HEADAUARTERS",
+          "confidence": 0.492055008163424
+        },
+        {
+          "text": "140 Mal Lr",
+          "confidence": 0.04857304107165136
+        },
+        {
+          "text": "HACCM",
+          "confidence": 0.2839245402932807
+        },
+        {
+          "text": "K5",
+          "confidence": 0.00963282407876748
+        },
+        {
+          "text": "92414i0",
+          "confidence": 0.7520934892178899
+        },
+        {
+          "text": "G",
+          "confidence": 0.6063255038746753
+        },
+        {
+          "text": "932,42.657",
+          "confidence": 0.2516523272362205
+        },
+        {
+          "text": "KMALIUSH",
+          "confidence": 0.003813336960241339
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "label": "metal identification nameplate",
+      "confidence": 0.15723232924938202,
+      "box_xyxy": [
+        10,
+        17,
+        663,
+        409
+      ],
+      "text": "tu \"LI' EBUB 93 R es W8; UE Stit; Cna NFI WlcBE FFIS Hariz VaoET [OWD FFS FuxloD CPEI HPS Sori URJIT WIIHSI;D) Hs TYPE | ECLCSURE MILLTRONICS MANUFACTURING CO CORPORAIE HEADAUARTERS 140 Mal Lr HACCM K5 87 84214i0 Gn 932,482697 Kmn Lolxh",
+      "ocr_lines": [
+        {
+          "text": "tu",
+          "confidence": 0.12404677671202996
+        },
+        {
+          "text": "\"LI'",
+          "confidence": 0.23271051049232483
+        },
+        {
+          "text": "EBUB",
+          "confidence": 0.5201423764228821
+        },
+        {
+          "text": "93 R",
+          "confidence": 0.18389922859453206
+        },
+        {
+          "text": "es",
+          "confidence": 0.32534699078737983
+        },
+        {
+          "text": "W8; UE",
+          "confidence": 0.11453766664148704
+        },
+        {
+          "text": "Stit; Cna",
+          "confidence": 0.016247670362270192
+        },
+        {
+          "text": "NFI WlcBE",
+          "confidence": 0.007544477870321674
+        },
+        {
+          "text": "FFIS",
+          "confidence": 0.23788012564182281
+        },
+        {
+          "text": "Hariz",
+          "confidence": 0.31605130080666166
+        },
+        {
+          "text": "VaoET [OWD",
+          "confidence": 0.01638882349032032
+        },
+        {
+          "text": "FFS",
+          "confidence": 0.4430156054984903
+        },
+        {
+          "text": "FuxloD CPEI",
+          "confidence": 0.025985737960441537
+        },
+        {
+          "text": "HPS",
+          "confidence": 0.15975329379964767
+        },
+        {
+          "text": "Sori URJIT WIIHSI;D)",
+          "confidence": 0.0035834959879948937
+        },
+        {
+          "text": "Hs",
+          "confidence": 0.21209113854601966
+        },
+        {
+          "text": "TYPE | ECLCSURE",
+          "confidence": 0.27810280517344155
+        },
+        {
+          "text": "MILLTRONICS MANUFACTURING CO",
+          "confidence": 0.734871489872683
+        },
+        {
+          "text": "CORPORAIE HEADAUARTERS",
+          "confidence": 0.492055008163424
+        },
+        {
+          "text": "140 Mal Lr",
+          "confidence": 0.04857304107165136
+        },
+        {
+          "text": "HACCM",
+          "confidence": 0.2839245402932807
+        },
+        {
+          "text": "K5",
+          "confidence": 0.007817359625010461
+        },
+        {
+          "text": "87",
+          "confidence": 0.2586162665666833
+        },
+        {
+          "text": "84214i0",
+          "confidence": 0.4041154760182181
+        },
+        {
+          "text": "Gn",
+          "confidence": 0.5100679476925268
+        },
+        {
+          "text": "932,482697",
+          "confidence": 0.08812648993637624
+        },
+        {
+          "text": "Kmn",
+          "confidence": 0.13692297390248093
+        },
+        {
+          "text": "Lolxh",
+          "confidence": 0.040715529342733155
+        }
+      ]
+    }
+  ]
+}

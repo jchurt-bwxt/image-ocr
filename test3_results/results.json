@@ -1,0 +1,167 @@
+{
+  "image": "C:\\Users\\jchurt\\image_text_detector\\test3.png",
+  "prompt": "rectangle shape in a diagram",
+  "model": "C:\\Users\\jchurt\\Downloads\\grounding-dino-tiny",
+  "threshold": 0.15,
+  "detections": [
+    {
+      "id": 1,
+      "label": "rectangle shape in a diagram",
+      "confidence": 0.24630917608737946,
+      "box_xyxy": [
+        0,
+        0,
+        378,
+        305
+      ],
+      "text": "SQUARE CIRCLE TRIANGLE RECTANGLE SCALENE PENTAGON RIGHT TRAPEZE KITE POLYGON PARALLELOGRAM ELLIPSE TREFOIL STAR SEMICIRCLE HEXAGON CRESCENT OCTAGON CROSS RING",
+      "ocr_lines": [
+        {
+          "text": "SQUARE",
+          "confidence": 0.9907376223273663
+        },
+        {
+          "text": "CIRCLE",
+          "confidence": 0.999202130504222
+        },
+        {
+          "text": "TRIANGLE",
+          "confidence": 0.9990391134768571
+        },
+        {
+          "text": "RECTANGLE",
+          "confidence": 0.9997029878681557
+        },
+        {
+          "text": "SCALENE",
+          "confidence": 0.9904050671785224
+        },
+        {
+          "text": "PENTAGON",
+          "confidence": 0.9999298666253699
+        },
+        {
+          "text": "RIGHT",
+          "confidence": 0.9989376914797322
+        },
+        {
+          "text": "TRAPEZE",
+          "confidence": 0.9996425431708443
+        },
+        {
+          "text": "KITE",
+          "confidence": 0.9993854761123657
+        },
+        {
+          "text": "POLYGON",
+          "confidence": 0.9985406242915907
+        },
+        {
+          "text": "PARALLELOGRAM",
+          "confidence": 0.9855987233580171
+        },
+        {
+          "text": "ELLIPSE",
+          "confidence": 0.9974446258379824
+        },
+        {
+          "text": "TREFOIL",
+          "confidence": 0.9982258727876088
+        },
+        {
+          "text": "STAR",
+          "confidence": 0.9990007877349854
+        },
+        {
+          "text": "SEMICIRCLE",
+          "confidence": 0.7063911117227933
+        },
+        {
+          "text": "HEXAGON",
+          "confidence": 0.996829480865926
+        },
+        {
+          "text": "CRESCENT",
+          "confidence": 0.9973046788044239
+        },
+        {
+          "text": "OCTAGON",
+          "confidence": 0.9943425250751662
+        },
+        {
+          "text": "CROSS",
+          "confidence": 0.9830311931327327
+        },
+        {
+          "text": "RING",
+          "confidence": 0.9998156428337097
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "label": "rectangle shape in a diagram",
+      "confidence": 0.22636722028255463,
+      "box_xyxy": [
+        249,
+        75,
+        294,
+        127
+      ],
+      "text": "",
+      "ocr_lines": []
+    },
+    {
+      "id": 3,
+      "label": "rectangle shape in a diagram",
+      "confidence": 0.18844731152057648,
+      "box_xyxy": [
+        165,
+        82,
+        225,
+        123
+      ],
+      "text": "",
+      "ocr_lines": []
+    },
+    {
+      "id": 4,
+      "label": "rectangle shape in a diagram",
+      "confidence": 0.15510611236095428,
+      "box_xyxy": [
+        14,
+        74,
+        66,
+        123
+      ],
+      "text": "",
+      "ocr_lines": []
+    },
+    {
+      "id": 5,
+      "label": "rectangle shape in a diagram",
+      "confidence": 0.15395154058933258,
+      "box_xyxy": [
+        171,
+        233,
+        220,
+        282
+      ],
+      "text": "",
+      "ocr_lines": []
+    },
+    {
+      "id": 6,
+      "label": "rectangle shape in a diagram",
+      "confidence": 0.15087822079658508,
+      "box_xyxy": [
+        322,
+        77,
+        373,
+        125
+      ],
+      "text": "",
+      "ocr_lines": []
+    }
+  ]
+}

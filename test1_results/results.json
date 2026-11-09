@@ -1,0 +1,98 @@
+{
+  "image": "C:\\Users\\jchurt\\image_text_detector\\test1.png",
+  "prompt": "rectangular plastic enclosure",
+  "model": "C:\\Users\\jchurt\\Downloads\\grounding-dino-tiny",
+  "threshold": 0.15,
+  "detections": [
+    {
+      "id": 1,
+      "label": "rectangular plastic enclosure",
+      "confidence": 0.26146045327186584,
+      "box_xyxy": [
+        22,
+        19,
+        238,
+        158
+      ],
+      "text": "PN-12345",
+      "ocr_lines": [
+        {
+          "text": "PN-12345",
+          "confidence": 0.9320666769484974
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "label": "rectangular plastic enclosure",
+      "confidence": 0.2562861740589142,
+      "box_xyxy": [
+        225,
+        211,
+        475,
+        322
+      ],
+      "text": "PN-63455",
+      "ocr_lines": [
+        {
+          "text": "PN-63455",
+          "confidence": 0.6388885069625134
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "label": "rectangular plastic enclosure",
+      "confidence": 0.22121910750865936,
+      "box_xyxy": [
+        25,
+        331,
+        176,
+        471
+      ],
+      "text": "PN-12345",
+      "ocr_lines": [
+        {
+          "text": "PN-12345",
+          "confidence": 0.9818733308238353
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "label": "rectangular plastic enclosure",
+      "confidence": 0.2089637666940689,
+      "box_xyxy": [
+        216,
+        351,
+        464,
+        463
+      ],
+      "text": "PN-23456",
+      "ocr_lines": [
+        {
+          "text": "PN-23456",
+          "confidence": 0.9618586863080036
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "label": "rectangular plastic enclosure",
+      "confidence": 0.19295431673526764,
+      "box_xyxy": [
+        270,
+        17,
+        473,
+        189
+      ],
+      "text": "PN-23456",
+      "ocr_lines": [
+        {
+          "text": "PN-23456",
+          "confidence": 0.9999108577696305
+        }
+      ]
+    }
+  ]
+}
