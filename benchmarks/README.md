@@ -78,7 +78,11 @@ The offline runner fails closed if it cannot enforce its guard; it cannot downlo
 
 The harness validates duplicate/missing samples, does not pass labels to the OCR engine, and records image/label hashes, model predictions, per-image errors, timings, and package/source versions. The provided label file uses image stems followed by `;` and the transcription. Filenames used by the OCR application never choose a prediction.
 
-Artifacts: [baseline report](results/baseline.json), [integrated enhanced report](results/enhanced.json), [independent raw-model comparisons](results/model_comparison.json), [model assets and SHA256 manifest](model_manifest.json). Medium model assets are downloaded by RapidOCR from its versioned registry, not committed to this repository.
+Artifacts: [baseline report](results/baseline.json), [integrated enhanced report](results/enhanced.json), [independent raw-model comparisons](results/model_comparison.json), [model assets and SHA256 manifest](model_manifest.json). Model weights are not committed to this repository.
+
+The application now downloads these same weights from a pinned public Hugging Face community mirror (`DjB314/RapidOCR`) and supplies verified local paths to all three RapidOCR stages. The detection, recognition, and orientation file sizes and SHA256 hashes are identical to those used in this evaluation. This source change preserves the evaluated models; the original benchmark JSON remains a historical record of the evaluated implementation. The manifest records the current Hugging Face URLs and original provenance.
+
+The download-source fix was checked with fresh-cache downloads of all three files and an offline OCR smoke run on image 1. All file sizes and hashes matched the original manifest. Cache/download tests cover corrupt and interrupted downloads, and reader tests ensure all three stages receive explicit local paths.
 
 ## Sources and licensing
 

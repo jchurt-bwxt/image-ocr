@@ -125,15 +125,23 @@ class ReaderLoadingTests(unittest.TestCase):
             LangRec=SimpleNamespace(CH="ch"),
             EngineType=SimpleNamespace(ONNXRUNTIME="onnxruntime"),
         )
-        with tempfile.TemporaryDirectory() as directory, patch.dict(sys.modules, {
-            "onnxruntime": SimpleNamespace(disable_telemetry_events=disable_telemetry),
-            "rapidocr": fake_rapidocr,
-        }), patch("ocr_readers.model_cache_directory", return_value=Path(directory)):
-            reader = IndustrialOCRReader()
+        with tempfile.TemporaryDirectory() as directory:
+            cache = Path(directory)
+            paths = {stage: cache / f"verified-{stage}.onnx" for stage in ("det", "rec", "cls")}
+            with patch.dict(sys.modules, {
+                "onnxruntime": SimpleNamespace(disable_telemetry_events=disable_telemetry),
+                "rapidocr": fake_rapidocr,
+            }), patch("ocr_readers.model_cache_directory", return_value=cache), patch(
+                "ocr_readers.get_enhanced_model_paths", return_value=paths
+            ) as model_paths:
+                reader = IndustrialOCRReader()
+            model_paths.assert_called_once_with(cache)
         self.assertIs(reader.engine, engine)
         self.assertEqual(order, ["telemetry_disabled", "rapidocr_constructed"])
         disable_telemetry.assert_called_once_with()
         self.assertFalse(factory.call_args.kwargs["params"]["EngineConfig.onnxruntime.use_cuda"])
+        for stage, key in (("det", "Det"), ("rec", "Rec"), ("cls", "Cls")):
+            self.assertEqual(factory.call_args.kwargs["params"][f"{key}.model_path"], str(paths[stage]))
 
     def test_enhanced_does_not_import_easyocr_or_torch(self):
         enhanced = Mock()

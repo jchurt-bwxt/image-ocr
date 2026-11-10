@@ -11,6 +11,8 @@ import cv2
 import numpy as np
 from PIL import Image
 
+from ocr_model_assets import get_enhanced_model_paths
+
 
 MODEL_ID = "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)"
 PREPROCESSING = ("original", "clahe", "blackhat")
@@ -71,6 +73,7 @@ class IndustrialOCRReader:
             raise ImportError("Enhanced OCR requires rapidocr and onnxruntime. Install requirements.txt.") from exc
         cache = model_cache_directory()
         cache.mkdir(parents=True, exist_ok=True)
+        paths = get_enhanced_model_paths(cache)
         self.engine = RapidOCR(params={
             "Global.model_root_dir": str(cache),
             "Global.log_level": "error",
@@ -81,13 +84,16 @@ class IndustrialOCRReader:
             "Det.ocr_version": OCRVersion.PPOCRV6,
             "Det.model_type": ModelType.MEDIUM,
             "Det.lang_type": "ch",
+            "Det.model_path": str(paths["det"]),
             "Rec.engine_type": EngineType.ONNXRUNTIME,
             "Rec.ocr_version": OCRVersion.PPOCRV6,
             "Rec.model_type": ModelType.MEDIUM,
             "Rec.lang_type": LangRec.CH,
+            "Rec.model_path": str(paths["rec"]),
             "Cls.engine_type": EngineType.ONNXRUNTIME,
             "Cls.ocr_version": OCRVersion.PPOCRV4,
             "Cls.model_type": ModelType.MOBILE,
+            "Cls.model_path": str(paths["cls"]),
         })
         self.last_details: dict[str, Any] = {}
 
