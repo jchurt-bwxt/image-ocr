@@ -27,8 +27,15 @@ class AnalysisOptions:
     device: str = "auto"
     model: str = DEFAULT_MODEL
     min_area_ratio: float = 0.001
+    ocr_profile: str = "enhanced"
 
     def validate(self) -> None:
+        if self.ocr_profile not in ("baseline", "enhanced"):
+            raise ValueError("OCR profile must be baseline or enhanced.")
+        if self.ocr_profile == "enhanced" and tuple(self.languages) != ("en",):
+            raise ValueError("Enhanced OCR is evaluated for English markings. Choose baseline for other OCR languages.")
+        if self.ocr_profile == "enhanced" and self.device == "cuda":
+            raise ValueError("Enhanced OCR uses ONNX Runtime on CPU. Choose auto/cpu, or baseline for CUDA OCR.")
         if self.mode not in MODES:
             raise ValueError(f"Choose an analysis mode from {', '.join(MODES)}.")
         if self.mode == "prompt" and not self.prompt.strip():
@@ -145,10 +152,14 @@ class OCREngine:
         self._detector = None
 
     def _get_reader(self, options: AnalysisOptions) -> Any:
-        key = (tuple(options.languages), options.device)
+        key = (options.ocr_profile, tuple(options.languages), options.device)
         if key != self._reader_key:
-            import easyocr
-            reader = easyocr.Reader(list(options.languages), gpu=select_device(options.device) == "cuda")
+            if options.ocr_profile == "enhanced":
+                from ocr_readers import IndustrialOCRReader
+                reader = IndustrialOCRReader()
+            else:
+                import easyocr
+                reader = easyocr.Reader(list(options.languages), gpu=select_device(options.device) == "cuda")
             self._reader, self._reader_key = reader, key
         return self._reader
 
@@ -201,6 +212,7 @@ class OCREngine:
         progress("Loading OCR model (first use may download weights)…")
         reader = self._get_reader(options)
         results = []
+        diagnostics = []
         if options.mode == "all":
             progress("Reading text across the whole image…")
             for line in self._read(reader, image):
@@ -209,6 +221,8 @@ class OCREngine:
                     "box_xyxy": _box(line["polygon"], image.size), "polygon": line["polygon"],
                     "text": line["text"], "ocr_lines": [line],
                 })
+            if getattr(reader, "last_details", None):
+                diagnostics.append({"region": "whole_image", **reader.last_details})
         else:
             if options.mode == "prompt":
                 progress("Loading detector and locating matching objects…")
@@ -234,6 +248,9 @@ class OCREngine:
                     ImageDraw.Draw(mask).polygon([(x - x1, y - y1) for x, y in region["polygon"]], fill=255)
                     crop = Image.composite(crop, Image.new("RGB", crop.size, "white"), mask)
                 lines = self._read(reader, crop, offset=(x1, y1))
+                if getattr(reader, "last_details", None):
+                    diagnostics.append({"region": index, "crop_origin": [x1, y1],
+                                        "candidate_coordinates": "relative to crop", **reader.last_details})
                 results.append({**region, "text": "\n".join(line["text"] for line in lines), "ocr_lines": lines})
         for index, result in enumerate(results, start=1):
             result["id"] = index
@@ -241,7 +258,8 @@ class OCREngine:
         return {"mode": options.mode, "prompt": options.prompt if options.mode == "prompt" else "",
                 "model": options.model if options.mode == "prompt" else None,
                 "threshold": options.threshold, "languages": list(options.languages),
-                "min_area_ratio": options.min_area_ratio, "image_size": list(image.size), "detections": results}
+                "min_area_ratio": options.min_area_ratio, "image_size": list(image.size), "detections": results,
+                "ocr_profile": options.ocr_profile, "ocr_diagnostics": diagnostics}
 
 
 def annotate_image(image: Image.Image, results: list[dict[str, Any]]) -> Image.Image:

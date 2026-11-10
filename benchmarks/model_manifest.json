@@ -1,0 +1,31 @@
+{
+  "runtime_package": "rapidocr==3.10.0",
+  "onnxruntime_tested": "1.31.1",
+  "model": "PP-OCRv6 medium with PP-OCRv4 orientation classifier",
+  "license": "Apache-2.0 per RapidOCR upstream license section; upstream model rights held by Baidu/PaddleOCR contributors",
+  "sources": [
+    "https://github.com/RapidAI/RapidOCR",
+    "https://github.com/RapidAI/RapidOCR/blob/main/LICENSE",
+    "https://github.com/RapidAI/RapidOCRDocs/blob/main/docs/model_list.md"
+  ],
+  "assets": [
+    {
+      "file": "PP-OCRv6_det_medium.onnx",
+      "bytes": 62119454,
+      "sha256": "92078b7355007ccfffcd4c8cd441a3afd4538904d06881b29a155e1e679907c2",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv6/det/PP-OCRv6_det_medium.onnx"
+    },
+    {
+      "file": "PP-OCRv6_rec_medium.onnx",
+      "bytes": 76629984,
+      "sha256": "eef444829dbbe18d7fea59a3f6eb75647518d2b3a9568d27c92e42940204894b",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv6/rec/PP-OCRv6_rec_medium.onnx"
+    },
+    {
+      "file": "ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "bytes": 585532,
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv4/cls/ch_ppocr_mobile_v2.0_cls_mobile.onnx"
+    }
+  ]
+}

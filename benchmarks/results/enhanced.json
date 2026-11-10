@@ -1,0 +1,2723 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-10T18:59:59.456820+00:00",
+  "engine": "RapidOCR via ocr_engine.OCREngine",
+  "profile": "enhanced",
+  "configuration": {
+    "mode": "all",
+    "prompt": "",
+    "threshold": 0.3,
+    "languages": [
+      "en"
+    ],
+    "device": "cpu",
+    "model": "IDEA-Research/grounding-dino-tiny",
+    "min_area_ratio": 0.001,
+    "ocr_profile": "enhanced"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "packages": {
+      "easyocr": "1.7.2",
+      "rapidocr": "3.10.0",
+      "onnxruntime": "1.31.1",
+      "torch": "2.15.0+cpu",
+      "torchvision": "0.29.2+cpu",
+      "numpy": "2.3.5",
+      "opencv-python-headless": "4.14.0.94",
+      "opencv-python": null,
+      "Pillow": "13.0.0",
+      "transformers": null
+    },
+    "ocr_engine_sha256": "548449ea57284f935b5731bceeab4503dc46b2932b0d8c9dbf5f857287779a29",
+    "source_sha256": {
+      "ocr_engine.py": "548449ea57284f935b5731bceeab4503dc46b2932b0d8c9dbf5f857287779a29",
+      "ocr_readers.py": "2a380b2ac1566222d3de04a525e77c444c36627780d89d864b8eb5eada3bc244"
+    }
+  },
+  "dataset": {
+    "labels_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img_labels.txt",
+    "labels_sha256": "4bf477ae89c4dfd2ed76d8eda5badfd0837734c2c712455b927914ff9a38cb1d",
+    "images_directory": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images",
+    "image_sha256": {
+      "id_img1": "250af935b6c623422f74770d672165a35f4366d0e0361cb2abc1aff8143e7f8a",
+      "id_img2": "65ce4f231040504fdb402aba7279a5da48ff895557dda78c628c9b72a0901bd6",
+      "id_img3": "3e79ffc85446bd45fc07e1bb550408ac4d8d89c930aa423dfd607fc9e741d8fd",
+      "id_img4": "b279f645154b07b15f642517e70464cde0cb7cd4bb59da1ef59057b477822bf1",
+      "id_img5": "b9a8eda2beb3eebf6b7835d9465eb01a6116347b8d3fe82b3c697f6c0b44c008",
+      "id_img6": "7f41e5ad811702de864d1b2461c2d0cfda7cc1beeb215f36738ad8c3ca31613b",
+      "id_img7": "4864acfcaf4192a79b5c2de8e4c05d28f4ff63d49842d60ef9d6cec4da0d10b5",
+      "id_img8": "fdfedf460dd2f2c9410cb42badb38e57de178a3adf905eabb0d245c003f52312",
+      "id_img9": "5eb4e3ca2ad942797688b2932666fa24abd8a4b199f8a4c47121d3ba8a51e38a",
+      "id_img10": "ff3c97523d047f22f0a3be24c1736e324a53f514b8c341d58743d915060b8d7d",
+      "id_img11": "f5301874a7e30822a72477a474c2c066e987fba47a0529edb7310a489be02052",
+      "id_img12": "13806c05ae86e9f97c7200ef505a3fb410c1073bbe171b7abdf19457db8670d2",
+      "id_img13": "7aa501369a432cd15808783553cfb63d6471c02aff321c27f0ada68c1d515b48",
+      "id_img14": "2a43f00b6513802f1019b70a2d4157654b71fe7bd4e2a53c1d6e57acab3a0227",
+      "id_img15": "07e7678137bc95087b52c06c1dbf30ec4293870af9cae58a7ce6bce72959d015"
+    }
+  },
+  "evaluation_scope": "Full extracted text versus full image-level transcription; incidental background text counts as insertions. Labels are used only for scoring. Failed images are scored as empty predictions. Primary metric: corpus alphanumeric CER (NFKC/casefold, letters and digits only). Strict CER retains punctuation and collapses whitespace. CER may exceed 1. First-image timing includes lazy model initialization/downloads; subsequent images reuse the engine.",
+  "wall_seconds": 48.10295640300046,
+  "summary": {
+    "image_count": 15,
+    "successful_images": 15,
+    "failed_images": 0,
+    "total_image_seconds": 48.08585876699635,
+    "metrics": {
+      "strict": {
+        "character_edits": 84,
+        "reference_characters": 251,
+        "corpus_cer": 0.3346613545816733,
+        "mean_image_cer": 0.3149119593856436,
+        "exact_match_count": 2,
+        "exact_match_rate": 0.13333333333333333
+      },
+      "alnum": {
+        "character_edits": 52,
+        "reference_characters": 200,
+        "corpus_cer": 0.26,
+        "mean_image_cer": 0.24757192617690638,
+        "exact_match_count": 5,
+        "exact_match_rate": 0.3333333333333333
+      }
+    }
+  },
+  "images": [
+    {
+      "image_id": "id_img1",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg",
+      "reference": "1921008-1208 REV A1 HT# 336909",
+      "prediction": "1921008-1208 REV A1\n\nHT#336909",
+      "metrics": {
+        "strict": {
+          "reference": "1921008-1208 rev a1 ht# 336909",
+          "prediction": "1921008-1208 rev a1 ht#336909",
+          "character_edits": 1,
+          "reference_characters": 30,
+          "cer": 0.03333333333333333,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "19210081208reva1ht336909",
+          "prediction": "19210081208reva1ht336909",
+          "character_edits": 0,
+          "reference_characters": 24,
+          "cer": 0.0,
+          "exact_match": true
+        }
+      },
+      "seconds": 6.695507997999812,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "original",
+          "selection_score": 6.815937419118706,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 6.815937419118706,
+              "lines": [
+                {
+                  "text": "1921008-1208 REV A1",
+                  "confidence": 0.99692,
+                  "polygon": [
+                    [
+                      539.0,
+                      604.0
+                    ],
+                    [
+                      1065.0,
+                      595.0
+                    ],
+                    [
+                      1067.0,
+                      693.0
+                    ],
+                    [
+                      541.0,
+                      702.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "HT#336909",
+                  "confidence": 0.99994,
+                  "polygon": [
+                    [
+                      643.0,
+                      693.0
+                    ],
+                    [
+                      950.0,
+                      693.0
+                    ],
+                    [
+                      950.0,
+                      761.0
+                    ],
+                    [
+                      643.0,
+                      761.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 6.676612290750251,
+              "lines": [
+                {
+                  "text": "1921008-1208 REV A1",
+                  "confidence": 0.97336,
+                  "polygon": [
+                    [
+                      538.0,
+                      604.0
+                    ],
+                    [
+                      1065.0,
+                      594.0
+                    ],
+                    [
+                      1067.0,
+                      693.0
+                    ],
+                    [
+                      540.0,
+                      703.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "HT# 336909",
+                  "confidence": 0.984,
+                  "polygon": [
+                    [
+                      641.0,
+                      695.0
+                    ],
+                    [
+                      951.0,
+                      691.0
+                    ],
+                    [
+                      952.0,
+                      759.0
+                    ],
+                    [
+                      642.0,
+                      764.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 6.732221641346596,
+              "lines": [
+                {
+                  "text": "1921008=1208 REV A1",
+                  "confidence": 0.97708,
+                  "polygon": [
+                    [
+                      540.0,
+                      604.0
+                    ],
+                    [
+                      1064.0,
+                      594.0
+                    ],
+                    [
+                      1066.0,
+                      693.0
+                    ],
+                    [
+                      542.0,
+                      703.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "HT# 336909",
+                  "confidence": 0.9984,
+                  "polygon": [
+                    [
+                      640.0,
+                      687.0
+                    ],
+                    [
+                      952.0,
+                      684.0
+                    ],
+                    [
+                      953.0,
+                      762.0
+                    ],
+                    [
+                      641.0,
+                      766.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img2",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img2.jpg",
+      "reference": "0454 1000",
+      "prediction": "0454\n\n1000",
+      "metrics": {
+        "strict": {
+          "reference": "0454 1000",
+          "prediction": "0454 1000",
+          "character_edits": 0,
+          "reference_characters": 9,
+          "cer": 0.0,
+          "exact_match": true
+        },
+        "alnum": {
+          "reference": "04541000",
+          "prediction": "04541000",
+          "character_edits": 0,
+          "reference_characters": 8,
+          "cer": 0.0,
+          "exact_match": true
+        }
+      },
+      "seconds": 2.7864361980000467,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "blackhat",
+          "selection_score": 3.99812,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 3.99678,
+              "lines": [
+                {
+                  "text": "0454",
+                  "confidence": 0.99854,
+                  "polygon": [
+                    [
+                      354.0,
+                      252.0
+                    ],
+                    [
+                      533.0,
+                      173.0
+                    ],
+                    [
+                      562.0,
+                      238.0
+                    ],
+                    [
+                      384.0,
+                      318.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "1000",
+                  "confidence": 0.99985,
+                  "polygon": [
+                    [
+                      393.0,
+                      307.0
+                    ],
+                    [
+                      567.0,
+                      233.0
+                    ],
+                    [
+                      596.0,
+                      302.0
+                    ],
+                    [
+                      423.0,
+                      376.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 3.99672,
+              "lines": [
+                {
+                  "text": "0454",
+                  "confidence": 0.99857,
+                  "polygon": [
+                    [
+                      354.0,
+                      253.0
+                    ],
+                    [
+                      533.0,
+                      173.0
+                    ],
+                    [
+                      563.0,
+                      238.0
+                    ],
+                    [
+                      384.0,
+                      319.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "1000",
+                  "confidence": 0.99979,
+                  "polygon": [
+                    [
+                      391.0,
+                      307.0
+                    ],
+                    [
+                      568.0,
+                      231.0
+                    ],
+                    [
+                      600.0,
+                      303.0
+                    ],
+                    [
+                      423.0,
+                      379.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 3.99812,
+              "lines": [
+                {
+                  "text": "0454",
+                  "confidence": 0.99936,
+                  "polygon": [
+                    [
+                      355.0,
+                      254.0
+                    ],
+                    [
+                      533.0,
+                      174.0
+                    ],
+                    [
+                      562.0,
+                      239.0
+                    ],
+                    [
+                      384.0,
+                      319.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "1000",
+                  "confidence": 0.9997,
+                  "polygon": [
+                    [
+                      392.0,
+                      307.0
+                    ],
+                    [
+                      566.0,
+                      231.0
+                    ],
+                    [
+                      598.0,
+                      302.0
+                    ],
+                    [
+                      424.0,
+                      378.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img3",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img3.jpg",
+      "reference": "DE IN ENGLAND",
+      "prediction": "DEINENG\n\nEAND",
+      "metrics": {
+        "strict": {
+          "reference": "de in england",
+          "prediction": "deineng eand",
+          "character_edits": 4,
+          "reference_characters": 13,
+          "cer": 0.3076923076923077,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "deinengland",
+          "prediction": "deinengeand",
+          "character_edits": 1,
+          "reference_characters": 11,
+          "cer": 0.09090909090909091,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.6205470949998926,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "clahe",
+          "selection_score": 4.095878659436418,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 2.4236140309876077,
+              "lines": [
+                {
+                  "text": "JEINENG",
+                  "confidence": 0.91604,
+                  "polygon": [
+                    [
+                      102.0,
+                      150.0
+                    ],
+                    [
+                      140.0,
+                      245.0
+                    ],
+                    [
+                      111.0,
+                      257.0
+                    ],
+                    [
+                      73.0,
+                      162.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 4.095878659436418,
+              "lines": [
+                {
+                  "text": "DEINENG",
+                  "confidence": 0.91295,
+                  "polygon": [
+                    [
+                      101.0,
+                      151.0
+                    ],
+                    [
+                      139.0,
+                      245.0
+                    ],
+                    [
+                      110.0,
+                      256.0
+                    ],
+                    [
+                      73.0,
+                      162.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "EAND",
+                  "confidence": 0.84022,
+                  "polygon": [
+                    [
+                      98.0,
+                      241.0
+                    ],
+                    [
+                      138.0,
+                      232.0
+                    ],
+                    [
+                      155.0,
+                      309.0
+                    ],
+                    [
+                      116.0,
+                      317.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 2.9228750952444065,
+              "lines": [
+                {
+                  "text": "HEIN ENGEAND",
+                  "confidence": 0.88128,
+                  "polygon": [
+                    [
+                      108.0,
+                      140.0
+                    ],
+                    [
+                      162.0,
+                      307.0
+                    ],
+                    [
+                      120.0,
+                      320.0
+                    ],
+                    [
+                      66.0,
+                      153.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img4",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img4.jpg",
+      "reference": "PL-5312 2 1/2\" / 304 1UD DTD 104/70 2UDS",
+      "prediction": "でに1304\n\nLUD DTD 104/76\n\nZUDS\n\nPL.:53/2",
+      "metrics": {
+        "strict": {
+          "reference": "pl-5312 2 1/2\" / 304 1ud dtd 104/70 2uds",
+          "prediction": "でに1304 lud dtd 104/76 zuds pl.:53/2",
+          "character_edits": 28,
+          "reference_characters": 40,
+          "cer": 0.7,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "pl53122123041uddtd104702uds",
+          "prediction": "でに1304luddtd10476zudspl532",
+          "character_edits": 16,
+          "reference_characters": 27,
+          "cer": 0.5925925925925926,
+          "exact_match": false
+        }
+      },
+      "seconds": 4.1313225929998225,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "blackhat",
+          "selection_score": 7.66202815149341,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 7.638554850063773,
+              "lines": [
+                {
+                  "text": "21に1304",
+                  "confidence": 0.72321,
+                  "polygon": [
+                    [
+                      312.0,
+                      70.0
+                    ],
+                    [
+                      623.0,
+                      124.0
+                    ],
+                    [
+                      604.0,
+                      232.0
+                    ],
+                    [
+                      293.0,
+                      178.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "LI DTD 104/76",
+                  "confidence": 0.66163,
+                  "polygon": [
+                    [
+                      317.0,
+                      118.0
+                    ],
+                    [
+                      740.0,
+                      226.0
+                    ],
+                    [
+                      711.0,
+                      339.0
+                    ],
+                    [
+                      288.0,
+                      231.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "ZUDS",
+                  "confidence": 0.99414,
+                  "polygon": [
+                    [
+                      447.0,
+                      219.0
+                    ],
+                    [
+                      593.0,
+                      269.0
+                    ],
+                    [
+                      573.0,
+                      330.0
+                    ],
+                    [
+                      426.0,
+                      280.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "PL.53/2",
+                  "confidence": 0.73548,
+                  "polygon": [
+                    [
+                      89.0,
+                      302.0
+                    ],
+                    [
+                      173.0,
+                      294.0
+                    ],
+                    [
+                      196.0,
+                      545.0
+                    ],
+                    [
+                      112.0,
+                      553.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 5.7550857783420035,
+              "lines": [
+                {
+                  "text": "でに1304",
+                  "confidence": 0.82701,
+                  "polygon": [
+                    [
+                      310.0,
+                      71.0
+                    ],
+                    [
+                      624.0,
+                      125.0
+                    ],
+                    [
+                      606.0,
+                      230.0
+                    ],
+                    [
+                      292.0,
+                      176.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "LIDDTD 1Ou/76",
+                  "confidence": 0.6384,
+                  "polygon": [
+                    [
+                      322.0,
+                      121.0
+                    ],
+                    [
+                      739.0,
+                      230.0
+                    ],
+                    [
+                      711.0,
+                      339.0
+                    ],
+                    [
+                      294.0,
+                      230.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "Sanz",
+                  "confidence": 0.806,
+                  "polygon": [
+                    [
+                      445.0,
+                      218.0
+                    ],
+                    [
+                      594.0,
+                      265.0
+                    ],
+                    [
+                      574.0,
+                      330.0
+                    ],
+                    [
+                      425.0,
+                      282.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 7.66202815149341,
+              "lines": [
+                {
+                  "text": "でに1304",
+                  "confidence": 0.92896,
+                  "polygon": [
+                    [
+                      313.0,
+                      70.0
+                    ],
+                    [
+                      647.0,
+                      134.0
+                    ],
+                    [
+                      627.0,
+                      242.0
+                    ],
+                    [
+                      293.0,
+                      178.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "LUD DTD 104/76",
+                  "confidence": 0.55833,
+                  "polygon": [
+                    [
+                      306.0,
+                      116.0
+                    ],
+                    [
+                      741.0,
+                      227.0
+                    ],
+                    [
+                      712.0,
+                      340.0
+                    ],
+                    [
+                      277.0,
+                      229.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "ZUDS",
+                  "confidence": 0.93252,
+                  "polygon": [
+                    [
+                      448.0,
+                      217.0
+                    ],
+                    [
+                      595.0,
+                      269.0
+                    ],
+                    [
+                      573.0,
+                      333.0
+                    ],
+                    [
+                      425.0,
+                      281.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "PL.:53/2",
+                  "confidence": 0.74673,
+                  "polygon": [
+                    [
+                      85.0,
+                      302.0
+                    ],
+                    [
+                      174.0,
+                      292.0
+                    ],
+                    [
+                      201.0,
+                      543.0
+                    ],
+                    [
+                      112.0,
+                      553.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img5",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img5.jpg",
+      "reference": "USA",
+      "prediction": "USA",
+      "metrics": {
+        "strict": {
+          "reference": "usa",
+          "prediction": "usa",
+          "character_edits": 0,
+          "reference_characters": 3,
+          "cer": 0.0,
+          "exact_match": true
+        },
+        "alnum": {
+          "reference": "usa",
+          "prediction": "usa",
+          "character_edits": 0,
+          "reference_characters": 3,
+          "cer": 0.0,
+          "exact_match": true
+        }
+      },
+      "seconds": 1.9174102959996162,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "original",
+          "selection_score": 1.7320161665527258,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 1.7320161665527258,
+              "lines": [
+                {
+                  "text": "USA",
+                  "confidence": 0.99998,
+                  "polygon": [
+                    [
+                      194.0,
+                      272.0
+                    ],
+                    [
+                      352.0,
+                      226.0
+                    ],
+                    [
+                      372.0,
+                      297.0
+                    ],
+                    [
+                      214.0,
+                      343.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 1.724706912144785,
+              "lines": [
+                {
+                  "text": "USA",
+                  "confidence": 0.99576,
+                  "polygon": [
+                    [
+                      192.0,
+                      274.0
+                    ],
+                    [
+                      350.0,
+                      226.0
+                    ],
+                    [
+                      370.0,
+                      296.0
+                    ],
+                    [
+                      212.0,
+                      344.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 1.7277726420741821,
+              "lines": [
+                {
+                  "text": "USA",
+                  "confidence": 0.99753,
+                  "polygon": [
+                    [
+                      194.0,
+                      271.0
+                    ],
+                    [
+                      351.0,
+                      225.0
+                    ],
+                    [
+                      371.0,
+                      296.0
+                    ],
+                    [
+                      214.0,
+                      342.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img6",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img6.jpg",
+      "reference": "AI MADE IN USA",
+      "prediction": "AI\n\nMADE IN USA.",
+      "metrics": {
+        "strict": {
+          "reference": "ai made in usa",
+          "prediction": "ai made in usa.",
+          "character_edits": 1,
+          "reference_characters": 14,
+          "cer": 0.07142857142857142,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "aimadeinusa",
+          "prediction": "aimadeinusa",
+          "character_edits": 0,
+          "reference_characters": 11,
+          "cer": 0.0,
+          "exact_match": true
+        }
+      },
+      "seconds": 2.1224782049994246,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "clahe",
+          "selection_score": 3.9519113029687576,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 3.8620675887777907,
+              "lines": [
+                {
+                  "text": "AI",
+                  "confidence": 0.766,
+                  "polygon": [
+                    [
+                      175.0,
+                      222.0
+                    ],
+                    [
+                      224.0,
+                      179.0
+                    ],
+                    [
+                      264.0,
+                      224.0
+                    ],
+                    [
+                      216.0,
+                      267.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "MADE IN USA.",
+                  "confidence": 0.92626,
+                  "polygon": [
+                    [
+                      117.0,
+                      361.0
+                    ],
+                    [
+                      388.0,
+                      114.0
+                    ],
+                    [
+                      452.0,
+                      184.0
+                    ],
+                    [
+                      181.0,
+                      431.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 3.9519113029687576,
+              "lines": [
+                {
+                  "text": "AI",
+                  "confidence": 0.81748,
+                  "polygon": [
+                    [
+                      174.0,
+                      223.0
+                    ],
+                    [
+                      224.0,
+                      178.0
+                    ],
+                    [
+                      266.0,
+                      223.0
+                    ],
+                    [
+                      216.0,
+                      268.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "MADE IN USA.",
+                  "confidence": 0.93194,
+                  "polygon": [
+                    [
+                      115.0,
+                      364.0
+                    ],
+                    [
+                      383.0,
+                      112.0
+                    ],
+                    [
+                      447.0,
+                      181.0
+                    ],
+                    [
+                      180.0,
+                      433.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 3.8293217431683075,
+              "lines": [
+                {
+                  "text": "AI",
+                  "confidence": 0.77178,
+                  "polygon": [
+                    [
+                      176.0,
+                      225.0
+                    ],
+                    [
+                      224.0,
+                      177.0
+                    ],
+                    [
+                      266.0,
+                      218.0
+                    ],
+                    [
+                      218.0,
+                      267.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "MADE IN USA.",
+                  "confidence": 0.91262,
+                  "polygon": [
+                    [
+                      109.0,
+                      358.0
+                    ],
+                    [
+                      391.0,
+                      110.0
+                    ],
+                    [
+                      461.0,
+                      189.0
+                    ],
+                    [
+                      179.0,
+                      437.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img7",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img7.jpg",
+      "reference": "NI MADE IN US",
+      "prediction": "EMACE INU",
+      "metrics": {
+        "strict": {
+          "reference": "ni made in us",
+          "prediction": "emace inu",
+          "character_edits": 6,
+          "reference_characters": 13,
+          "cer": 0.46153846153846156,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "nimadeinus",
+          "prediction": "emaceinu",
+          "character_edits": 4,
+          "reference_characters": 10,
+          "cer": 0.4,
+          "exact_match": false
+        }
+      },
+      "seconds": 1.996767708000334,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "clahe",
+          "selection_score": 2.2452620201660207,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 2.0316685283283786,
+              "lines": [
+                {
+                  "text": "RS-MACE INUR",
+                  "confidence": 0.64247,
+                  "polygon": [
+                    [
+                      85.0,
+                      104.0
+                    ],
+                    [
+                      599.0,
+                      201.0
+                    ],
+                    [
+                      593.0,
+                      421.0
+                    ],
+                    [
+                      47.0,
+                      325.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 2.2452620201660207,
+              "lines": [
+                {
+                  "text": "EMACE INU",
+                  "confidence": 0.79382,
+                  "polygon": [
+                    [
+                      175.0,
+                      137.0
+                    ],
+                    [
+                      599.0,
+                      205.0
+                    ],
+                    [
+                      590.0,
+                      400.0
+                    ],
+                    [
+                      146.0,
+                      331.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 1.3972294364205187,
+              "lines": [
+                {
+                  "text": "NADEU",
+                  "confidence": 0.62486,
+                  "polygon": [
+                    [
+                      90.0,
+                      123.0
+                    ],
+                    [
+                      599.0,
+                      202.0
+                    ],
+                    [
+                      587.0,
+                      388.0
+                    ],
+                    [
+                      63.0,
+                      309.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img8",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img8.jpg",
+      "reference": "308282ST",
+      "prediction": "082ST",
+      "metrics": {
+        "strict": {
+          "reference": "308282st",
+          "prediction": "082st",
+          "character_edits": 3,
+          "reference_characters": 8,
+          "cer": 0.375,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "308282st",
+          "prediction": "082st",
+          "character_edits": 3,
+          "reference_characters": 8,
+          "cer": 0.375,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.5428617879997546,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "original",
+          "selection_score": 1.8911321312906724,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 1.8911321312906724,
+              "lines": [
+                {
+                  "text": "082ST",
+                  "confidence": 0.84574,
+                  "polygon": [
+                    [
+                      0.0,
+                      302.0
+                    ],
+                    [
+                      674.0,
+                      311.0
+                    ],
+                    [
+                      674.0,
+                      553.0
+                    ],
+                    [
+                      0.0,
+                      544.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 1.6002196874179497,
+              "lines": [
+                {
+                  "text": "3d8sT",
+                  "confidence": 0.71564,
+                  "polygon": [
+                    [
+                      0.0,
+                      304.0
+                    ],
+                    [
+                      674.0,
+                      335.0
+                    ],
+                    [
+                      674.0,
+                      531.0
+                    ],
+                    [
+                      0.0,
+                      500.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 1.8027180034603305,
+              "lines": [
+                {
+                  "text": "082ST",
+                  "confidence": 0.8062,
+                  "polygon": [
+                    [
+                      0.0,
+                      296.0
+                    ],
+                    [
+                      674.0,
+                      320.0
+                    ],
+                    [
+                      674.0,
+                      561.0
+                    ],
+                    [
+                      0.0,
+                      538.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img9",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img9.jpg",
+      "reference": "5035729",
+      "prediction": "50\n\n35729",
+      "metrics": {
+        "strict": {
+          "reference": "5035729",
+          "prediction": "50 35729",
+          "character_edits": 1,
+          "reference_characters": 7,
+          "cer": 0.14285714285714285,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "5035729",
+          "prediction": "5035729",
+          "character_edits": 0,
+          "reference_characters": 7,
+          "cer": 0.0,
+          "exact_match": true
+        }
+      },
+      "seconds": 2.533057158999327,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "clahe",
+          "selection_score": 3.634800128658017,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 2.591725069292652,
+              "lines": [
+                {
+                  "text": "5035729",
+                  "confidence": 0.97958,
+                  "polygon": [
+                    [
+                      0.0,
+                      370.0
+                    ],
+                    [
+                      674.0,
+                      401.0
+                    ],
+                    [
+                      674.0,
+                      548.0
+                    ],
+                    [
+                      0.0,
+                      517.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 3.634800128658017,
+              "lines": [
+                {
+                  "text": "50",
+                  "confidence": 0.99601,
+                  "polygon": [
+                    [
+                      0.0,
+                      383.0
+                    ],
+                    [
+                      226.0,
+                      383.0
+                    ],
+                    [
+                      226.0,
+                      510.0
+                    ],
+                    [
+                      0.0,
+                      510.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "35729",
+                  "confidence": 0.9956,
+                  "polygon": [
+                    [
+                      179.0,
+                      390.0
+                    ],
+                    [
+                      674.0,
+                      403.0
+                    ],
+                    [
+                      674.0,
+                      530.0
+                    ],
+                    [
+                      176.0,
+                      517.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 2.329610486905483,
+              "lines": [
+                {
+                  "text": "5235729",
+                  "confidence": 0.88051,
+                  "polygon": [
+                    [
+                      0.0,
+                      371.0
+                    ],
+                    [
+                      674.0,
+                      388.0
+                    ],
+                    [
+                      674.0,
+                      538.0
+                    ],
+                    [
+                      0.0,
+                      522.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img10",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img10.jpg",
+      "reference": "503574",
+      "prediction": "5035",
+      "metrics": {
+        "strict": {
+          "reference": "503574",
+          "prediction": "5035",
+          "character_edits": 2,
+          "reference_characters": 6,
+          "cer": 0.3333333333333333,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "503574",
+          "prediction": "5035",
+          "character_edits": 2,
+          "reference_characters": 6,
+          "cer": 0.3333333333333333,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.3314640489998055,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "blackhat",
+          "selection_score": 1.85682,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 0.0,
+              "lines": []
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 1.481076645552147,
+              "lines": [
+                {
+                  "text": "503",
+                  "confidence": 0.8551,
+                  "polygon": [
+                    [
+                      0.0,
+                      378.0
+                    ],
+                    [
+                      328.0,
+                      385.0
+                    ],
+                    [
+                      326.0,
+                      510.0
+                    ],
+                    [
+                      0.0,
+                      503.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 1.85682,
+              "lines": [
+                {
+                  "text": "5035",
+                  "confidence": 0.92841,
+                  "polygon": [
+                    [
+                      0.0,
+                      365.0
+                    ],
+                    [
+                      400.0,
+                      385.0
+                    ],
+                    [
+                      393.0,
+                      524.0
+                    ],
+                    [
+                      0.0,
+                      503.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img11",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img11.jpg",
+      "reference": "332 350 71",
+      "prediction": "332350",
+      "metrics": {
+        "strict": {
+          "reference": "332 350 71",
+          "prediction": "332350",
+          "character_edits": 4,
+          "reference_characters": 10,
+          "cer": 0.4,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "33235071",
+          "prediction": "332350",
+          "character_edits": 2,
+          "reference_characters": 8,
+          "cer": 0.25,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.4399145500001396,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "original",
+          "selection_score": 2.3202546639539374,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 2.3202546639539374,
+              "lines": [
+                {
+                  "text": "332350",
+                  "confidence": 0.94724,
+                  "polygon": [
+                    [
+                      22.0,
+                      196.0
+                    ],
+                    [
+                      653.0,
+                      181.0
+                    ],
+                    [
+                      657.0,
+                      329.0
+                    ],
+                    [
+                      26.0,
+                      343.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 1.8508378576201645,
+              "lines": [
+                {
+                  "text": "22203507",
+                  "confidence": 0.65437,
+                  "polygon": [
+                    [
+                      18.0,
+                      193.0
+                    ],
+                    [
+                      663.0,
+                      193.0
+                    ],
+                    [
+                      663.0,
+                      340.0
+                    ],
+                    [
+                      18.0,
+                      340.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 1.9243872161028301,
+              "lines": [
+                {
+                  "text": "2820507",
+                  "confidence": 0.72735,
+                  "polygon": [
+                    [
+                      31.0,
+                      180.0
+                    ],
+                    [
+                      665.0,
+                      184.0
+                    ],
+                    [
+                      664.0,
+                      340.0
+                    ],
+                    [
+                      30.0,
+                      336.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img12",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img12.jpg",
+      "reference": "V86 288R86288- SA-182MF12CL26 QT UT MT",
+      "prediction": "V86 230R8628\n\n2\n\nSA-182MF12CL\n\nOT\n\nUT MT",
+      "metrics": {
+        "strict": {
+          "reference": "v86 288r86288- sa-182mf12cl26 qt ut mt",
+          "prediction": "v86 230r8628 2 sa-182mf12cl ot ut mt",
+          "character_edits": 7,
+          "reference_characters": 38,
+          "cer": 0.18421052631578946,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "v86288r86288sa182mf12cl26qtutmt",
+          "prediction": "v86230r86282sa182mf12clotutmt",
+          "character_edits": 6,
+          "reference_characters": 31,
+          "cer": 0.1935483870967742,
+          "exact_match": false
+        }
+      },
+      "seconds": 3.068472443999781,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "clahe",
+          "selection_score": 9.194331969903194,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 8.919720348136336,
+              "lines": [
+                {
+                  "text": "V86 23BR86289",
+                  "confidence": 0.7862,
+                  "polygon": [
+                    [
+                      288.0,
+                      251.0
+                    ],
+                    [
+                      492.0,
+                      261.0
+                    ],
+                    [
+                      491.0,
+                      293.0
+                    ],
+                    [
+                      287.0,
+                      283.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "SA-182MF12CL",
+                  "confidence": 0.94333,
+                  "polygon": [
+                    [
+                      289.0,
+                      276.0
+                    ],
+                    [
+                      475.0,
+                      285.0
+                    ],
+                    [
+                      474.0,
+                      315.0
+                    ],
+                    [
+                      287.0,
+                      306.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "or",
+                  "confidence": 0.84947,
+                  "polygon": [
+                    [
+                      544.0,
+                      284.0
+                    ],
+                    [
+                      586.0,
+                      281.0
+                    ],
+                    [
+                      589.0,
+                      315.0
+                    ],
+                    [
+                      546.0,
+                      319.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "UTMT",
+                  "confidence": 0.93312,
+                  "polygon": [
+                    [
+                      347.0,
+                      306.0
+                    ],
+                    [
+                      439.0,
+                      312.0
+                    ],
+                    [
+                      436.0,
+                      346.0
+                    ],
+                    [
+                      345.0,
+                      340.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 9.194331969903194,
+              "lines": [
+                {
+                  "text": "V86 230R8628",
+                  "confidence": 0.71116,
+                  "polygon": [
+                    [
+                      288.0,
+                      251.0
+                    ],
+                    [
+                      486.0,
+                      260.0
+                    ],
+                    [
+                      484.0,
+                      293.0
+                    ],
+                    [
+                      287.0,
+                      284.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "2",
+                  "confidence": 0.96224,
+                  "polygon": [
+                    [
+                      538.0,
+                      256.0
+                    ],
+                    [
+                      562.0,
+                      252.0
+                    ],
+                    [
+                      566.0,
+                      280.0
+                    ],
+                    [
+                      542.0,
+                      283.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "SA-182MF12CL",
+                  "confidence": 0.93057,
+                  "polygon": [
+                    [
+                      289.0,
+                      276.0
+                    ],
+                    [
+                      473.0,
+                      285.0
+                    ],
+                    [
+                      472.0,
+                      315.0
+                    ],
+                    [
+                      287.0,
+                      306.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "OT",
+                  "confidence": 0.69522,
+                  "polygon": [
+                    [
+                      544.0,
+                      284.0
+                    ],
+                    [
+                      587.0,
+                      281.0
+                    ],
+                    [
+                      590.0,
+                      315.0
+                    ],
+                    [
+                      547.0,
+                      319.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "UT MT",
+                  "confidence": 0.90195,
+                  "polygon": [
+                    [
+                      348.0,
+                      306.0
+                    ],
+                    [
+                      439.0,
+                      311.0
+                    ],
+                    [
+                      437.0,
+                      346.0
+                    ],
+                    [
+                      346.0,
+                      341.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 5.668044137454069,
+              "lines": [
+                {
+                  "text": "086 246R862",
+                  "confidence": 0.83447,
+                  "polygon": [
+                    [
+                      289.0,
+                      250.0
+                    ],
+                    [
+                      488.0,
+                      262.0
+                    ],
+                    [
+                      486.0,
+                      296.0
+                    ],
+                    [
+                      287.0,
+                      284.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "SA-1821F12C02",
+                  "confidence": 0.87446,
+                  "polygon": [
+                    [
+                      288.0,
+                      277.0
+                    ],
+                    [
+                      492.0,
+                      286.0
+                    ],
+                    [
+                      491.0,
+                      316.0
+                    ],
+                    [
+                      287.0,
+                      307.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img13",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img13.jpg",
+      "reference": "17975 CC02 858 339 / 003 / F",
+      "prediction": "17945\n\n1200285\n\n1291003/F",
+      "metrics": {
+        "strict": {
+          "reference": "17975 cc02 858 339 / 003 / f",
+          "prediction": "17945 1200285 1291003/f",
+          "character_edits": 13,
+          "reference_characters": 28,
+          "cer": 0.4642857142857143,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "17975cc02858339003f",
+          "prediction": "1794512002851291003f",
+          "character_edits": 8,
+          "reference_characters": 19,
+          "cer": 0.42105263157894735,
+          "exact_match": false
+        }
+      },
+      "seconds": 3.1459604629999376,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "original",
+          "selection_score": 6.997674032984079,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 6.997674032984079,
+              "lines": [
+                {
+                  "text": "17945",
+                  "confidence": 0.95935,
+                  "polygon": [
+                    [
+                      241.0,
+                      356.0
+                    ],
+                    [
+                      508.0,
+                      348.0
+                    ],
+                    [
+                      511.0,
+                      451.0
+                    ],
+                    [
+                      244.0,
+                      459.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "1200285",
+                  "confidence": 0.82265,
+                  "polygon": [
+                    [
+                      563.0,
+                      401.0
+                    ],
+                    [
+                      816.0,
+                      406.0
+                    ],
+                    [
+                      814.0,
+                      480.0
+                    ],
+                    [
+                      562.0,
+                      475.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "1291003/F",
+                  "confidence": 0.9461,
+                  "polygon": [
+                    [
+                      246.0,
+                      440.0
+                    ],
+                    [
+                      652.0,
+                      457.0
+                    ],
+                    [
+                      648.0,
+                      575.0
+                    ],
+                    [
+                      241.0,
+                      558.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 6.5102323460648535,
+              "lines": [
+                {
+                  "text": "17945",
+                  "confidence": 0.89566,
+                  "polygon": [
+                    [
+                      241.0,
+                      360.0
+                    ],
+                    [
+                      504.0,
+                      348.0
+                    ],
+                    [
+                      509.0,
+                      449.0
+                    ],
+                    [
+                      245.0,
+                      461.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "200285",
+                  "confidence": 0.8785,
+                  "polygon": [
+                    [
+                      546.0,
+                      401.0
+                    ],
+                    [
+                      816.0,
+                      407.0
+                    ],
+                    [
+                      814.0,
+                      477.0
+                    ],
+                    [
+                      545.0,
+                      471.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "(1391003/F",
+                  "confidence": 0.83283,
+                  "polygon": [
+                    [
+                      243.0,
+                      442.0
+                    ],
+                    [
+                      646.0,
+                      464.0
+                    ],
+                    [
+                      640.0,
+                      576.0
+                    ],
+                    [
+                      237.0,
+                      555.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 6.292123229755753,
+              "lines": [
+                {
+                  "text": "17945",
+                  "confidence": 0.86466,
+                  "polygon": [
+                    [
+                      238.0,
+                      352.0
+                    ],
+                    [
+                      504.0,
+                      345.0
+                    ],
+                    [
+                      506.0,
+                      457.0
+                    ],
+                    [
+                      241.0,
+                      463.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "CC0285",
+                  "confidence": 0.89329,
+                  "polygon": [
+                    [
+                      572.0,
+                      398.0
+                    ],
+                    [
+                      819.0,
+                      396.0
+                    ],
+                    [
+                      820.0,
+                      485.0
+                    ],
+                    [
+                      573.0,
+                      487.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "1910",
+                  "confidence": 0.60888,
+                  "polygon": [
+                    [
+                      249.0,
+                      441.0
+                    ],
+                    [
+                      564.0,
+                      443.0
+                    ],
+                    [
+                      563.0,
+                      565.0
+                    ],
+                    [
+                      249.0,
+                      562.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "F",
+                  "confidence": 0.95282,
+                  "polygon": [
+                    [
+                      544.0,
+                      471.0
+                    ],
+                    [
+                      655.0,
+                      471.0
+                    ],
+                    [
+                      655.0,
+                      552.0
+                    ],
+                    [
+                      544.0,
+                      552.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img14",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img14.jpg",
+      "reference": "078 3004517C SET P0378-1",
+      "prediction": "0783001517C\n\n5ET0378-17",
+      "metrics": {
+        "strict": {
+          "reference": "078 3004517c set p0378-1",
+          "prediction": "0783001517c 5et0378-17",
+          "character_edits": 6,
+          "reference_characters": 24,
+          "cer": 0.25,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "0783004517csetp03781",
+          "prediction": "0783001517c5et037817",
+          "character_edits": 4,
+          "reference_characters": 20,
+          "cer": 0.2,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.4966012549994048,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "clahe",
+          "selection_score": 5.707594302092341,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 0.0,
+              "lines": []
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 5.707594302092341,
+              "lines": [
+                {
+                  "text": "0783001517C",
+                  "confidence": 0.95594,
+                  "polygon": [
+                    [
+                      166.0,
+                      199.0
+                    ],
+                    [
+                      445.0,
+                      193.0
+                    ],
+                    [
+                      446.0,
+                      236.0
+                    ],
+                    [
+                      167.0,
+                      242.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "5ET0378-17",
+                  "confidence": 0.8457,
+                  "polygon": [
+                    [
+                      198.0,
+                      231.0
+                    ],
+                    [
+                      481.0,
+                      225.0
+                    ],
+                    [
+                      482.0,
+                      264.0
+                    ],
+                    [
+                      199.0,
+                      270.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 5.262017117154734,
+              "lines": [
+                {
+                  "text": "078 30 07517C",
+                  "confidence": 0.87947,
+                  "polygon": [
+                    [
+                      169.0,
+                      202.0
+                    ],
+                    [
+                      444.0,
+                      197.0
+                    ],
+                    [
+                      445.0,
+                      236.0
+                    ],
+                    [
+                      170.0,
+                      241.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "5ETA0378-17",
+                  "confidence": 0.7416,
+                  "polygon": [
+                    [
+                      233.0,
+                      231.0
+                    ],
+                    [
+                      476.0,
+                      223.0
+                    ],
+                    [
+                      477.0,
+                      265.0
+                    ],
+                    [
+                      234.0,
+                      272.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "id_img15",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img15.jpg",
+      "reference": "4314 LEM",
+      "prediction": "1\n\ne\n\n431\n\n0",
+      "metrics": {
+        "strict": {
+          "reference": "4314 lem",
+          "prediction": "1 e 431 0",
+          "character_edits": 8,
+          "reference_characters": 8,
+          "cer": 1.0,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "4314lem",
+          "prediction": "1e4310",
+          "character_edits": 6,
+          "reference_characters": 7,
+          "cer": 0.8571428571428571,
+          "exact_match": false
+        }
+      },
+      "seconds": 7.257056965999254,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+          "selected_preprocessing": "original",
+          "selection_score": 3.5828029752841495,
+          "candidates": [
+            {
+              "preprocessing": "original",
+              "selection_score": 3.5828029752841495,
+              "lines": [
+                {
+                  "text": "1",
+                  "confidence": 0.50696,
+                  "polygon": [
+                    [
+                      1212.0,
+                      106.0
+                    ],
+                    [
+                      1382.0,
+                      137.0
+                    ],
+                    [
+                      1338.0,
+                      372.0
+                    ],
+                    [
+                      1168.0,
+                      342.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "e",
+                  "confidence": 0.68954,
+                  "polygon": [
+                    [
+                      1350.0,
+                      137.0
+                    ],
+                    [
+                      1599.0,
+                      129.0
+                    ],
+                    [
+                      1599.0,
+                      420.0
+                    ],
+                    [
+                      1359.0,
+                      428.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "431",
+                  "confidence": 0.99779,
+                  "polygon": [
+                    [
+                      539.0,
+                      279.0
+                    ],
+                    [
+                      869.0,
+                      305.0
+                    ],
+                    [
+                      856.0,
+                      467.0
+                    ],
+                    [
+                      526.0,
+                      442.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "0",
+                  "confidence": 0.65808,
+                  "polygon": [
+                    [
+                      853.0,
+                      569.0
+                    ],
+                    [
+                      935.0,
+                      569.0
+                    ],
+                    [
+                      935.0,
+                      628.0
+                    ],
+                    [
+                      853.0,
+                      628.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "clahe",
+              "selection_score": 1.99138,
+              "lines": [
+                {
+                  "text": "4313",
+                  "confidence": 0.99569,
+                  "polygon": [
+                    [
+                      537.0,
+                      280.0
+                    ],
+                    [
+                      974.0,
+                      307.0
+                    ],
+                    [
+                      964.0,
+                      474.0
+                    ],
+                    [
+                      527.0,
+                      447.0
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "preprocessing": "blackhat",
+              "selection_score": 2.68454,
+              "lines": [
+                {
+                  "text": "0",
+                  "confidence": 0.7047,
+                  "polygon": [
+                    [
+                      240.0,
+                      256.0
+                    ],
+                    [
+                      455.0,
+                      305.0
+                    ],
+                    [
+                      410.0,
+                      496.0
+                    ],
+                    [
+                      195.0,
+                      447.0
+                    ]
+                  ]
+                },
+                {
+                  "text": "4313",
+                  "confidence": 0.98992,
+                  "polygon": [
+                    [
+                      547.0,
+                      286.0
+                    ],
+                    [
+                      1044.0,
+                      334.0
+                    ],
+                    [
+                      1030.0,
+                      476.0
+                    ],
+                    [
+                      533.0,
+                      428.0
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

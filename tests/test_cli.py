@@ -35,7 +35,20 @@ class EntryPointTests(unittest.TestCase):
         return options
 
     def test_image_without_mode_or_prompt_reads_all_text(self):
-        self.assertEqual(self.run_cli([]).mode, "all")
+        options = self.run_cli([])
+        self.assertEqual(options.mode, "all")
+        self.assertEqual(options.ocr_profile, "enhanced")
+
+    def test_original_profile_preserves_language_selection(self):
+        options = self.run_cli(["--ocr-profile", "baseline", "--languages", "en,fr"])
+        self.assertEqual(options.ocr_profile, "baseline")
+        self.assertEqual(options.languages, ("en", "fr"))
+
+    def test_enhanced_rejects_other_languages_without_running_engine(self):
+        with patch.object(image_ocr_main, "OCREngine") as engine:
+            with self.assertRaisesRegex(SystemExit, "English|en|language"):
+                image_ocr_main.main(["sample.png", "--ocr-profile", "enhanced", "--languages", "fr"])
+        engine.assert_not_called()
 
     def test_explicit_all_mode_does_not_require_prompt(self):
         options = self.run_cli(["--mode", "all"])

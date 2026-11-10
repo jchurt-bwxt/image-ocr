@@ -1,0 +1,472 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-10T18:49:49.278537+00:00",
+  "engine": "EasyOCR via ocr_engine.OCREngine",
+  "profile": "baseline",
+  "configuration": {
+    "mode": "all",
+    "prompt": "",
+    "threshold": 0.3,
+    "languages": [
+      "en"
+    ],
+    "device": "cpu",
+    "model": "IDEA-Research/grounding-dino-tiny",
+    "min_area_ratio": 0.001
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "packages": {
+      "easyocr": "1.7.2",
+      "torch": "2.15.0+cpu",
+      "torchvision": "0.29.2+cpu",
+      "numpy": "2.3.5",
+      "opencv-python-headless": "4.14.0.94",
+      "opencv-python": null,
+      "Pillow": "13.0.0",
+      "transformers": null
+    },
+    "ocr_engine_sha256": "f1b7cd483b09195126472dae5e4b6e383d0de42c826f4f10a4e1b104e7d55f7e"
+  },
+  "dataset": {
+    "labels_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img_labels.txt",
+    "labels_sha256": "4bf477ae89c4dfd2ed76d8eda5badfd0837734c2c712455b927914ff9a38cb1d",
+    "images_directory": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images",
+    "image_sha256": {
+      "id_img1": "250af935b6c623422f74770d672165a35f4366d0e0361cb2abc1aff8143e7f8a",
+      "id_img2": "65ce4f231040504fdb402aba7279a5da48ff895557dda78c628c9b72a0901bd6",
+      "id_img3": "3e79ffc85446bd45fc07e1bb550408ac4d8d89c930aa423dfd607fc9e741d8fd",
+      "id_img4": "b279f645154b07b15f642517e70464cde0cb7cd4bb59da1ef59057b477822bf1",
+      "id_img5": "b9a8eda2beb3eebf6b7835d9465eb01a6116347b8d3fe82b3c697f6c0b44c008",
+      "id_img6": "7f41e5ad811702de864d1b2461c2d0cfda7cc1beeb215f36738ad8c3ca31613b",
+      "id_img7": "4864acfcaf4192a79b5c2de8e4c05d28f4ff63d49842d60ef9d6cec4da0d10b5",
+      "id_img8": "fdfedf460dd2f2c9410cb42badb38e57de178a3adf905eabb0d245c003f52312",
+      "id_img9": "5eb4e3ca2ad942797688b2932666fa24abd8a4b199f8a4c47121d3ba8a51e38a",
+      "id_img10": "ff3c97523d047f22f0a3be24c1736e324a53f514b8c341d58743d915060b8d7d",
+      "id_img11": "f5301874a7e30822a72477a474c2c066e987fba47a0529edb7310a489be02052",
+      "id_img12": "13806c05ae86e9f97c7200ef505a3fb410c1073bbe171b7abdf19457db8670d2",
+      "id_img13": "7aa501369a432cd15808783553cfb63d6471c02aff321c27f0ada68c1d515b48",
+      "id_img14": "2a43f00b6513802f1019b70a2d4157654b71fe7bd4e2a53c1d6e57acab3a0227",
+      "id_img15": "07e7678137bc95087b52c06c1dbf30ec4293870af9cae58a7ce6bce72959d015"
+    }
+  },
+  "evaluation_scope": "Full extracted text versus full image-level transcription; incidental background text counts as insertions. Labels are used only for scoring. Failed images are scored as empty predictions. Primary metric: corpus alphanumeric CER (NFKC/casefold, letters and digits only). Strict CER retains punctuation and collapses whitespace. CER may exceed 1. First-image timing includes lazy model initialization/downloads; subsequent images reuse the engine.",
+  "wall_seconds": 54.30490473300006,
+  "summary": {
+    "image_count": 15,
+    "successful_images": 15,
+    "failed_images": 0,
+    "total_image_seconds": 54.29367042699914,
+    "metrics": {
+      "strict": {
+        "character_edits": 152,
+        "reference_characters": 251,
+        "corpus_cer": 0.6055776892430279,
+        "mean_image_cer": 0.6722902341323393,
+        "exact_match_count": 0,
+        "exact_match_rate": 0.0
+      },
+      "alnum": {
+        "character_edits": 113,
+        "reference_characters": 200,
+        "corpus_cer": 0.565,
+        "mean_image_cer": 0.5686190903564985,
+        "exact_match_count": 0,
+        "exact_match_rate": 0.0
+      }
+    }
+  },
+  "images": [
+    {
+      "image_id": "id_img1",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg",
+      "reference": "1921008-1208 REV A1 HT# 336909",
+      "prediction": "1921008-1208 \n\nAI\n\nHt# 336909\n\nREV _",
+      "metrics": {
+        "strict": {
+          "reference": "1921008-1208 rev a1 ht# 336909",
+          "prediction": "1921008-1208 ai ht# 336909 rev _",
+          "character_edits": 11,
+          "reference_characters": 30,
+          "cer": 0.36666666666666664,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "19210081208reva1ht336909",
+          "prediction": "19210081208aiht336909rev",
+          "character_edits": 7,
+          "reference_characters": 24,
+          "cer": 0.2916666666666667,
+          "exact_match": false
+        }
+      },
+      "seconds": 11.800366068999665,
+      "error": null
+    },
+    {
+      "image_id": "id_img2",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img2.jpg",
+      "reference": "0454 1000",
+      "prediction": "0454\n\nT00O",
+      "metrics": {
+        "strict": {
+          "reference": "0454 1000",
+          "prediction": "0454 t00o",
+          "character_edits": 2,
+          "reference_characters": 9,
+          "cer": 0.2222222222222222,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "04541000",
+          "prediction": "0454t00o",
+          "character_edits": 2,
+          "reference_characters": 8,
+          "cer": 0.25,
+          "exact_match": false
+        }
+      },
+      "seconds": 3.47240038200016,
+      "error": null
+    },
+    {
+      "image_id": "id_img3",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img3.jpg",
+      "reference": "DE IN ENGLAND",
+      "prediction": "2",
+      "metrics": {
+        "strict": {
+          "reference": "de in england",
+          "prediction": "2",
+          "character_edits": 13,
+          "reference_characters": 13,
+          "cer": 1.0,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "deinengland",
+          "prediction": "2",
+          "character_edits": 11,
+          "reference_characters": 11,
+          "cer": 1.0,
+          "exact_match": false
+        }
+      },
+      "seconds": 0.8247340910002094,
+      "error": null
+    },
+    {
+      "image_id": "id_img4",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img4.jpg",
+      "reference": "PL-5312 2 1/2\" / 304 1UD DTD 104/70 2UDS",
+      "prediction": "Zk\n\nAuo\n\n3\n\n0\n\n[304\n\nDTa\n\n404/+6\n\nRuo>",
+      "metrics": {
+        "strict": {
+          "reference": "pl-5312 2 1/2\" / 304 1ud dtd 104/70 2uds",
+          "prediction": "zk auo 3 0 [304 dta 404/+6 ruo>",
+          "character_edits": 25,
+          "reference_characters": 40,
+          "cer": 0.625,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "pl53122123041uddtd104702uds",
+          "prediction": "zkauo30304dta4046ruo",
+          "character_edits": 19,
+          "reference_characters": 27,
+          "cer": 0.7037037037037037,
+          "exact_match": false
+        }
+      },
+      "seconds": 5.379572732999804,
+      "error": null
+    },
+    {
+      "image_id": "id_img5",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img5.jpg",
+      "reference": "USA",
+      "prediction": "U $ A",
+      "metrics": {
+        "strict": {
+          "reference": "usa",
+          "prediction": "u $ a",
+          "character_edits": 3,
+          "reference_characters": 3,
+          "cer": 1.0,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "usa",
+          "prediction": "ua",
+          "character_edits": 1,
+          "reference_characters": 3,
+          "cer": 0.3333333333333333,
+          "exact_match": false
+        }
+      },
+      "seconds": 1.6135724340001616,
+      "error": null
+    },
+    {
+      "image_id": "id_img6",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img6.jpg",
+      "reference": "AI MADE IN USA",
+      "prediction": "6\n\nIN USA\n\n3",
+      "metrics": {
+        "strict": {
+          "reference": "ai made in usa",
+          "prediction": "6 in usa 3",
+          "character_edits": 9,
+          "reference_characters": 14,
+          "cer": 0.6428571428571429,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "aimadeinusa",
+          "prediction": "6inusa3",
+          "character_edits": 7,
+          "reference_characters": 11,
+          "cer": 0.6363636363636364,
+          "exact_match": false
+        }
+      },
+      "seconds": 1.6531081500002074,
+      "error": null
+    },
+    {
+      "image_id": "id_img7",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img7.jpg",
+      "reference": "NI MADE IN US",
+      "prediction": "~ --i",
+      "metrics": {
+        "strict": {
+          "reference": "ni made in us",
+          "prediction": "~ --i",
+          "character_edits": 11,
+          "reference_characters": 13,
+          "cer": 0.8461538461538461,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "nimadeinus",
+          "prediction": "i",
+          "character_edits": 9,
+          "reference_characters": 10,
+          "cer": 0.9,
+          "exact_match": false
+        }
+      },
+      "seconds": 1.72750353299989,
+      "error": null
+    },
+    {
+      "image_id": "id_img8",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img8.jpg",
+      "reference": "308282ST",
+      "prediction": "50 8 282 ST",
+      "metrics": {
+        "strict": {
+          "reference": "308282st",
+          "prediction": "50 8 282 st",
+          "character_edits": 4,
+          "reference_characters": 8,
+          "cer": 0.5,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "308282st",
+          "prediction": "508282st",
+          "character_edits": 1,
+          "reference_characters": 8,
+          "cer": 0.125,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.913599669999712,
+      "error": null
+    },
+    {
+      "image_id": "id_img9",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img9.jpg",
+      "reference": "5035729",
+      "prediction": "520 3.5 7",
+      "metrics": {
+        "strict": {
+          "reference": "5035729",
+          "prediction": "520 3.5 7",
+          "character_edits": 6,
+          "reference_characters": 7,
+          "cer": 0.8571428571428571,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "5035729",
+          "prediction": "520357",
+          "character_edits": 3,
+          "reference_characters": 7,
+          "cer": 0.42857142857142855,
+          "exact_match": false
+        }
+      },
+      "seconds": 3.0282399269999587,
+      "error": null
+    },
+    {
+      "image_id": "id_img10",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img10.jpg",
+      "reference": "503574",
+      "prediction": "",
+      "metrics": {
+        "strict": {
+          "reference": "503574",
+          "prediction": "",
+          "character_edits": 6,
+          "reference_characters": 6,
+          "cer": 1.0,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "503574",
+          "prediction": "",
+          "character_edits": 6,
+          "reference_characters": 6,
+          "cer": 1.0,
+          "exact_match": false
+        }
+      },
+      "seconds": 3.06004744799975,
+      "error": null
+    },
+    {
+      "image_id": "id_img11",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img11.jpg",
+      "reference": "332 350 71",
+      "prediction": "3519",
+      "metrics": {
+        "strict": {
+          "reference": "332 350 71",
+          "prediction": "3519",
+          "character_edits": 8,
+          "reference_characters": 10,
+          "cer": 0.8,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "33235071",
+          "prediction": "3519",
+          "character_edits": 6,
+          "reference_characters": 8,
+          "cer": 0.75,
+          "exact_match": false
+        }
+      },
+      "seconds": 1.7726149899999655,
+      "error": null
+    },
+    {
+      "image_id": "id_img12",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img12.jpg",
+      "reference": "V86 288R86288- SA-182MF12CL26 QT UT MT",
+      "prediction": "086\n\nBokdoz\n\nSA 182mF120,\n\nNT",
+      "metrics": {
+        "strict": {
+          "reference": "v86 288r86288- sa-182mf12cl26 qt ut mt",
+          "prediction": "086 bokdoz sa 182mf120, nt",
+          "character_edits": 23,
+          "reference_characters": 38,
+          "cer": 0.6052631578947368,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "v86288r86288sa182mf12cl26qtutmt",
+          "prediction": "086bokdozsa182mf120nt",
+          "character_edits": 19,
+          "reference_characters": 31,
+          "cer": 0.6129032258064516,
+          "exact_match": false
+        }
+      },
+      "seconds": 2.2237914030001775,
+      "error": null
+    },
+    {
+      "image_id": "id_img13",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img13.jpg",
+      "reference": "17975 CC02 858 339 / 003 / F",
+      "prediction": "44 945\n\n4602 $5\n\n33 9\n\n062 ,",
+      "metrics": {
+        "strict": {
+          "reference": "17975 cc02 858 339 / 003 / f",
+          "prediction": "44 945 4602 $5 33 9 062 ,",
+          "character_edits": 15,
+          "reference_characters": 28,
+          "cer": 0.5357142857142857,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "17975cc02858339003f",
+          "prediction": "4494546025339062",
+          "character_edits": 10,
+          "reference_characters": 19,
+          "cer": 0.5263157894736842,
+          "exact_match": false
+        }
+      },
+      "seconds": 4.01401412999985,
+      "error": null
+    },
+    {
+      "image_id": "id_img14",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img14.jpg",
+      "reference": "078 3004517C SET P0378-1",
+      "prediction": "078 30o73 .1 €\n\nSE7 703 18-1",
+      "metrics": {
+        "strict": {
+          "reference": "078 3004517c set p0378-1",
+          "prediction": "078 30o73 .1 € se7 703 18-1",
+          "character_edits": 11,
+          "reference_characters": 24,
+          "cer": 0.4583333333333333,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "0783004517csetp03781",
+          "prediction": "07830o731se7703181",
+          "character_edits": 8,
+          "reference_characters": 20,
+          "cer": 0.4,
+          "exact_match": false
+        }
+      },
+      "seconds": 1.4157971979998365,
+      "error": null
+    },
+    {
+      "image_id": "id_img15",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img15.jpg",
+      "reference": "4314 LEM",
+      "prediction": "43 13",
+      "metrics": {
+        "strict": {
+          "reference": "4314 lem",
+          "prediction": "43 13",
+          "character_edits": 5,
+          "reference_characters": 8,
+          "cer": 0.625,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "4314lem",
+          "prediction": "4313",
+          "character_edits": 4,
+          "reference_characters": 7,
+          "cer": 0.5714285714285714,
+          "exact_match": false
+        }
+      },
+      "seconds": 9.394308268999794,
+      "error": null
+    }
+  ]
+}

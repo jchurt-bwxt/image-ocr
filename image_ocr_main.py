@@ -15,7 +15,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--prompt", default="", help="Object description for prompt mode, for example 'rectangular sign'.")
     parser.add_argument("--threshold", type=float, default=0.30, help="Prompt detection confidence, from 0 to 1.")
     parser.add_argument("--min-area-ratio", type=float, default=0.001, help="Minimum shape area as a fraction of image area.")
-    parser.add_argument("--languages", default="en", help="Comma-separated EasyOCR language codes, for example en,fr.")
+    parser.add_argument("--ocr-profile", choices=("baseline", "enhanced"), default="enhanced", help="OCR profile: enhanced for difficult English markings (default), baseline for original EasyOCR.")
+    parser.add_argument("--languages", default="en", help="Comma-separated OCR language codes. Enhanced supports en; baseline supports other EasyOCR languages, for example en,fr.")
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="Grounding DINO model ID or local SafeTensors snapshot folder; used only in prompt mode.")
     parser.add_argument("--output-dir", type=Path, default=None)
@@ -32,7 +33,7 @@ def main(argv: list[str] | None = None) -> None:
         mode=args.mode or ("prompt" if args.prompt.strip() else "all"),
         prompt=args.prompt, threshold=args.threshold, model=args.model,
         languages=tuple(part.strip() for part in args.languages.split(",") if part.strip()),
-        device=args.device, min_area_ratio=args.min_area_ratio,
+        device=args.device, min_area_ratio=args.min_area_ratio, ocr_profile=args.ocr_profile,
     )
     try:
         options.validate()

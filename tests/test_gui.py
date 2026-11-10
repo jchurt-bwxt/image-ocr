@@ -118,5 +118,49 @@ class EventTests(unittest.TestCase):
         app.root.after.assert_called_once()
 
 
+class ProfileSettingsTests(unittest.TestCase):
+    def app(self, profile="Difficult markings (enhanced)", languages="en"):
+        app = OCRApp.__new__(OCRApp)
+        for attribute, value in {
+            "mode": "All text in image", "ocr_profile": profile, "languages": languages,
+            "threshold": "0.30", "min_area": "0.1", "prompt": "", "model": "model-id", "device": "cpu",
+        }.items():
+            variable = Mock()
+            variable.get.return_value = value
+            setattr(app, attribute, variable)
+        return app
+
+    def test_options_send_enhanced_profile(self):
+        options = self.app()._options()
+        self.assertEqual(options.ocr_profile, "enhanced")
+        self.assertEqual(options.languages, ("en",))
+
+    def test_original_profile_preserves_selected_languages(self):
+        options = self.app("Original EasyOCR (baseline)", "en,fr")._options()
+        self.assertEqual(options.ocr_profile, "baseline")
+        self.assertEqual(options.languages, ("en", "fr"))
+
+    def test_enhanced_other_languages_raise_without_silent_changes(self):
+        app = self.app(languages="fr")
+        with self.assertRaisesRegex(ValueError, "Original EasyOCR"):
+            app._options()
+        app.languages.set.assert_not_called()
+
+    def test_profile_selector_is_disabled_during_analysis(self):
+        app = self.app()
+        app.busy = True
+        app.items = {}
+        app.stop_event = threading.Event()
+        app._selected = Mock(return_value=(None, None))
+        for attribute in (
+            "add_button", "language_entry", "remove_button", "clear_button", "mode_combo", "profile_combo",
+            "device_combo", "prompt_entry", "model_entry", "model_button", "threshold_entry", "area_entry",
+            "analyze_button", "stop_button", "export_button", "copy_button",
+        ):
+            setattr(app, attribute, Mock())
+        app._set_controls()
+        app.profile_combo.configure.assert_called_once_with(state="disabled")
+
+
 if __name__ == "__main__":
     unittest.main()

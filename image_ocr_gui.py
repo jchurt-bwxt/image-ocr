@@ -27,6 +27,10 @@ MODES = {
     "Text inside triangles": "triangles",
     "Text inside objects matching a prompt": "prompt",
 }
+OCR_PROFILES = {
+    "Difficult markings (enhanced)": "enhanced",
+    "Original EasyOCR (baseline)": "baseline",
+}
 
 
 class OCRApp:
@@ -47,6 +51,7 @@ class OCRApp:
         self.resize_job = None
 
         self.mode = tk.StringVar(value="All text in image")
+        self.ocr_profile = tk.StringVar(value="Difficult markings (enhanced)")
         self.prompt = tk.StringVar(value="rectangular object")
         self.model = tk.StringVar(value="IDEA-Research/grounding-dino-tiny")
         self.threshold = tk.StringVar(value="0.30")
@@ -106,12 +111,22 @@ class OCRApp:
         self.model_entry.grid(row=2, column=1, columnspan=4, sticky="ew", padx=(0, 8), pady=(8, 0))
         self.model_button = ttk.Button(options, text="Choose folder…", command=self._choose_model)
         self.model_button.grid(row=2, column=5, sticky="ew", pady=(8, 0))
+        ttk.Label(options, text="OCR profile").grid(row=3, column=0, sticky="w", pady=(8, 0))
+        self.profile_combo = ttk.Combobox(
+            options, textvariable=self.ocr_profile, values=list(OCR_PROFILES), state="readonly", width=32
+        )
+        self.profile_combo.grid(row=3, column=1, sticky="ew", padx=(0, 16), pady=(8, 0))
+        ttk.Label(
+            options,
+            text="Enhanced OCR is optimized for English letters/numbers; use original EasyOCR for other languages.",
+            wraplength=580,
+        ).grid(row=3, column=2, columnspan=4, sticky="w", pady=(8, 0))
         ttk.Label(
             options,
             text=("Object prompt uses the detection model. Shape searches use visible outlines. "
                   "Languages use OCR codes such as en or en,fr."),
             wraplength=1100,
-        ).grid(row=3, column=0, columnspan=6, sticky="w", pady=(8, 0))
+        ).grid(row=4, column=0, columnspan=6, sticky="w", pady=(8, 0))
 
         main = ttk.Panedwindow(outer, orient="horizontal")
         main.pack(fill="both", expand=True)
@@ -226,6 +241,7 @@ class OCRApp:
         for widget in (self.add_button, self.language_entry, self.remove_button, self.clear_button):
             widget.configure(state=normal)
         self.mode_combo.configure(state="disabled" if self.busy else "readonly")
+        self.profile_combo.configure(state="disabled" if self.busy else "readonly")
         self.device_combo.configure(state="disabled" if self.busy else "readonly")
         for widget in (self.prompt_entry, self.model_entry, self.model_button, self.threshold_entry):
             widget.configure(state="normal" if not self.busy and mode == "prompt" else "disabled")
@@ -352,9 +368,15 @@ class OCRApp:
 
     def _options(self) -> AnalysisOptions:
         mode = MODES[self.mode.get()]
+        profile = OCR_PROFILES[self.ocr_profile.get()]
         languages = tuple(code.strip() for code in self.languages.get().split(",") if code.strip())
         if not languages:
             raise ValueError("Enter at least one OCR language code, such as en.")
+        if profile == "enhanced" and languages != ("en",):
+            raise ValueError(
+                "Enhanced OCR supports English letters/numbers only. "
+                "Set Languages to en or choose Original EasyOCR (baseline) for other languages."
+            )
         threshold = float(self.threshold.get()) if mode == "prompt" else 0.30
         area_ratio = float(self.min_area.get()) / 100 if mode in ("rectangles", "triangles") else 0.001
         if not 0 <= threshold <= 1:
@@ -368,7 +390,7 @@ class OCRApp:
         return AnalysisOptions(
             mode=mode, prompt=self.prompt.get().strip() if mode == "prompt" else "",
             threshold=threshold, languages=languages, device=self.device.get(),
-            model=self.model.get().strip(), min_area_ratio=area_ratio,
+            model=self.model.get().strip(), min_area_ratio=area_ratio, ocr_profile=profile,
         )
 
     def _analyze(self) -> None:
