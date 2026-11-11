@@ -10,6 +10,8 @@ The model runs `<OCR_WITH_REGION>` once and returns recognized labels and text q
 
 See [the large model manifest](large_model_manifest.json) for the pinned revision, file size, observed SHA256, license, and tested versions. The full snapshot was downloaded and its SafeTensors hash checked during evaluation. Default application loading uses the Hugging Face cache; a complete local snapshot can instead be provided through `IMAGE_OCR_LARGE_MODEL_DIR`.
 
+HTTPS setup uses the operating-system trust store and an optional approved PEM bundle (`IMAGE_OCR_CA_BUNDLE`). The pinned snapshot is resolved before importing the model stack, then processor/model loading is local-only. See [certificate troubleshooting](../README.md#https-certificates-on-managed-windows-networks) for enterprise networks. TLS verification is not disabled. This download-path change does not alter the model weights or the inference preset measured below.
+
 ## CPU budget and memory
 
 The default **processing** deadline is 120 seconds per image. Users can lower it. It covers geometry search and all OCR crops after the model is ready, rather than granting another 120 seconds to each crop. A deadline terminates the native worker, reports `timeout`, and permits remaining comparisons to continue. Termination cleanup can add a small overhead.

@@ -11,6 +11,8 @@ from pathlib import Path
 import tempfile
 from urllib.request import Request, urlopen
 
+from ocr_network import configure_tls
+
 
 MODEL_REPOSITORY = "DjB314/RapidOCR"
 MODEL_REVISION = "04e88d0483f0bfcdd0f29429594244c10bfc2867"
@@ -54,6 +56,7 @@ def _download_model(cache: Path, asset: dict) -> Path:
     destination = cache / asset["filename"]
     temporary = None
     try:
+        configure_tls()
         request = Request(asset_url(asset), headers={"User-Agent": "image-ocr-model-download/1.0"})
         with urlopen(request, timeout=60) as response, tempfile.NamedTemporaryFile(
             dir=cache, prefix=asset["filename"] + ".", suffix=".part", delete=False,

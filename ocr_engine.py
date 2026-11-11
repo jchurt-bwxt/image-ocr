@@ -18,6 +18,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
 from ocr_profiles import OCR_PROFILES, PROFILE_LABELS
+from ocr_network import configure_tls
 
 MODES = ("all", "rectangles", "triangles")
 
@@ -155,6 +156,7 @@ class OCREngine:
                 from ocr_readers import IndustrialOCRReader
                 reader = IndustrialOCRReader()
             else:
+                configure_tls()
                 import easyocr
                 reader = easyocr.Reader(list(options.languages), gpu=select_device(options.device) == "cuda")
             self._reader, self._reader_key = reader, key

@@ -170,7 +170,7 @@ class ReaderLoadingTests(unittest.TestCase):
         with patch.dict(sys.modules, {
             "ocr_readers": SimpleNamespace(IndustrialOCRReader=enhanced_factory),
             "easyocr": SimpleNamespace(Reader=baseline_factory),
-        }), patch("ocr_engine.select_device", return_value="cpu"):
+        }), patch("ocr_engine.select_device", return_value="cpu"), patch("ocr_engine.configure_tls") as tls:
             engine = OCREngine()
             enhanced = AnalysisOptions(ocr_profile="enhanced", device="cpu")
             baseline = AnalysisOptions(ocr_profile="baseline", device="cpu")
@@ -181,6 +181,35 @@ class ReaderLoadingTests(unittest.TestCase):
             self.assertIs(engine._get_reader(enhanced), enhanced_readers[1])
         self.assertEqual(enhanced_factory.call_count, 2)
         baseline_factory.assert_called_once_with(["en"], gpu=False)
+        tls.assert_called_once_with()
+
+    def test_baseline_configures_tls_before_importing_easyocr(self):
+        order = []
+        reader = Mock()
+        tls = Mock(side_effect=lambda: order.append("tls"))
+        original_import = builtins.__import__
+
+        def guarded_import(name, *args, **kwargs):
+            if name == "easyocr":
+                self.assertEqual(order, ["tls"])
+                order.append("easyocr_import")
+            return original_import(name, *args, **kwargs)
+
+        def construct(*_args, **_kwargs):
+            self.assertEqual(order, ["tls", "easyocr_import"])
+            order.append("reader_created")
+            return reader
+
+        factory = Mock(side_effect=construct)
+        with patch.dict(sys.modules, {"easyocr": SimpleNamespace(Reader=factory)}), patch(
+            "ocr_engine.configure_tls", tls
+        ), patch("ocr_engine.select_device", return_value="cpu"), patch(
+            "builtins.__import__", side_effect=guarded_import
+        ):
+            engine = OCREngine()
+            self.assertIs(engine._get_reader(AnalysisOptions(ocr_profile="baseline", device="cpu")), reader)
+        self.assertEqual(order, ["tls", "easyocr_import", "reader_created"])
+        tls.assert_called_once_with()
 
     def test_enhanced_rejects_unsupported_language_before_model_loading(self):
         engine = OCREngine()

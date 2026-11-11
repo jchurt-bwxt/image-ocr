@@ -14,6 +14,28 @@ MODEL_REPOSITORY = "florence-community/Florence-2-large-ft"
 MODEL_REVISION = "26b734a54fdfbf9c398351eedfabb7f27fc470b7"
 TASK = "<OCR_WITH_REGION>"
 MAX_NEW_TOKENS = 512
+MODEL_FILES = (
+    "config.json", "generation_config.json", "preprocessor_config.json", "processor_config.json",
+    "tokenizer.json", "tokenizer_config.json", "vocab.json", "merges.txt", "added_tokens.json",
+    "special_tokens_map.json", "model.safetensors",
+)
+
+
+def get_large_model_directory() -> str:
+    local_model = os.environ.get("IMAGE_OCR_LARGE_MODEL_DIR")
+    if local_model:
+        from pathlib import Path
+        directory = Path(local_model).expanduser()
+        if not directory.is_dir():
+            raise ValueError(f"IMAGE_OCR_LARGE_MODEL_DIR is not a model snapshot folder: {directory}")
+        return str(directory.resolve())
+    from ocr_network import configure_tls
+    configure_tls()
+    from huggingface_hub import snapshot_download
+    return snapshot_download(
+        repo_id=MODEL_REPOSITORY, revision=MODEL_REVISION,
+        allow_patterns=list(MODEL_FILES),
+    )
 
 
 def _worker(tasks, results) -> None:
@@ -21,13 +43,15 @@ def _worker(tasks, results) -> None:
     try:
         os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
         os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+        local_model = os.environ.get("IMAGE_OCR_LARGE_MODEL_DIR")
+        # Resolve/download the pinned complete snapshot before importing clients
+        # through Transformers. Native loaders then perform no network probes.
+        source = get_large_model_directory()
         import torch
         from transformers import AutoProcessor, Florence2ForConditionalGeneration
         torch.set_num_threads(min(4, os.cpu_count() or 2))
         torch.set_num_interop_threads(1)
-        local_model = os.environ.get("IMAGE_OCR_LARGE_MODEL_DIR")
-        source = local_model or MODEL_REPOSITORY
-        load_options = {"local_files_only": True} if local_model else {"revision": MODEL_REVISION}
+        load_options = {"local_files_only": True}
         processor = AutoProcessor.from_pretrained(
             source, trust_remote_code=False, use_fast=False, **load_options,
         )
@@ -39,7 +63,8 @@ def _worker(tasks, results) -> None:
         model.generation_config.early_stopping = False
         results.send({"status": "ready"})
     except Exception as exc:
-        results.send({"status": "error", "error": f"Could not initialize Florence-2: {type(exc).__name__}: {exc}"})
+        from ocr_network import describe_download_error
+        results.send({"status": "error", "error": "Could not initialize Florence-2: " + describe_download_error(exc)})
         return
     try:
         while True:

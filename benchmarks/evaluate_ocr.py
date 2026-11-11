@@ -206,14 +206,14 @@ def environment_info() -> dict[str, Any]:
     packages = {}
     for package in (
         "easyocr", "rapidocr", "onnxruntime", "torch", "torchvision", "numpy",
-        "opencv-python-headless", "opencv-python", "Pillow", "transformers",
+        "opencv-python-headless", "opencv-python", "Pillow", "transformers", "truststore", "huggingface-hub", "requests", "certifi",
     ):
         try:
             packages[package] = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
             packages[package] = None
     source_hashes = {name: file_sha256(ROOT / name) for name in (
-        "ocr_engine.py", "ocr_readers.py", "ocr_model_assets.py", "large_ocr.py", "ocr_profiles.py", "ocr_comparison.py",
+        "ocr_engine.py", "ocr_readers.py", "ocr_model_assets.py", "large_ocr.py", "ocr_profiles.py", "ocr_comparison.py", "ocr_network.py",
     )}
     return {
         "python": sys.version,

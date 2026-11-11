@@ -49,6 +49,9 @@ class ModelAssetTests(unittest.TestCase):
         self.asset_patch.start()
         self.network_patch = patch.object(assets, "urlopen", side_effect=AssertionError("Real network is forbidden in model asset tests"))
         self.urlopen = self.network_patch.start()
+        self.tls_patch = patch.object(assets, "configure_tls", return_value=None, create=True)
+        self.tls = self.tls_patch.start()
+        self.addCleanup(self.tls_patch.stop)
         self.addCleanup(self.network_patch.stop)
         self.addCleanup(self.asset_patch.stop)
         self.addCleanup(self.temporary.cleanup)
@@ -69,10 +72,12 @@ class ModelAssetTests(unittest.TestCase):
             self.assertEqual(path, self.cache / self.fixtures[stage]["filename"])
             self.assertEqual(path.read_bytes(), self.contents[stage])
         self.urlopen.assert_not_called()
+        self.tls.assert_not_called()
         self.assert_no_partial_files()
 
     def test_missing_models_download_from_pinned_hugging_face_urls(self):
         def response(request, timeout):
+            self.assertTrue(self.tls.called)
             self.assertEqual(timeout, 60)
             for stage, asset in self.fixtures.items():
                 expected = (

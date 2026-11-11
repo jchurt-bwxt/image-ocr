@@ -60,6 +60,28 @@ The large model is the native Transformers-compatible [florence-community/Floren
 
 Once the appropriate model files are cached, inference runs locally without network access. ONNX telemetry is disabled before RapidOCR session creation. OCR images are not sent to a hosted inference service. EasyOCR has separate model files that download on its first use.
 
+## HTTPS certificates on managed Windows networks
+
+An error such as `CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate` occurs during the download, before OCR inference. An enterprise proxy/security tool may present a certificate trusted by Windows but absent from Python's bundled CA list. The application now uses `truststore` to validate against operating-system trust, including the Windows certificate store. Install the updated requirements and restart the application:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install --upgrade -r requirements.txt
+.\.venv\Scripts\python.exe ocr_network.py --check
+.\.venv\Scripts\python.exe image_ocr_main.py
+```
+
+The check verifies access to a small pinned Hugging Face configuration file with both download clients; it does not download the large weights or upload images. If the approved issuer is missing from Windows too, ask IT to install the organization's root/intermediate CA or provide an approved **PEM CA bundle**. You can then launch from the same PowerShell session:
+
+```powershell
+$env:IMAGE_OCR_CA_BUNDLE = "C:\certs\company-ca-bundle.pem"
+.\.venv\Scripts\python.exe ocr_network.py --check
+.\.venv\Scripts\python.exe image_ocr_main.py
+```
+
+The path is an example; use the real bundle supplied by IT. This setting only applies to the current process and its children. A separately double-clicked launcher does not inherit a temporary PowerShell setting. CA precedence is `IMAGE_OCR_CA_BUNDLE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, then `SSL_CERT_FILE`; the selected valid PEM bundle is applied consistently to Requests and urllib. Invalid/missing files fail with an explanation. Certificate-chain and hostname verification remain enabled, and the application does not modify the machine's certificate store.
+
+Model downloads use the Python HTTPS transport so these trust settings also govern large-file transfers. Florence first resolves the complete, revision-pinned snapshot, then loads its processor and weights with `local_files_only=True`, avoiding additional unpinned metadata probes. Existing Hugging Face cache files are reused. A complete local snapshot via `IMAGE_OCR_LARGE_MODEL_DIR` remains an alternative when downloads cannot be allowed on the network. If package installation itself has a certificate error, your IT-approved bundle can also be supplied to pip with `--cert`.
+
 ## Optional command line
 
 Run with no image argument for the GUI. Examples:
