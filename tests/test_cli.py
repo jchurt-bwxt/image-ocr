@@ -1,64 +1,82 @@
-"""CLI entry-point regressions with model inference and GUI startup mocked."""
-
-from contextlib import redirect_stdout
+"""CLI profile and comparison tests without loading model weights."""
+from contextlib import redirect_stderr, redirect_stdout
 import io
 from pathlib import Path
 import sys
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
-
 from PIL import Image
+import image_ocr_main as cli
+from ocr_profiles import OCR_PROFILES, PROFILE_LABELS
 
-import image_ocr_main
+
+def model_row(profile="enhanced", status="ok"):
+    return {"profile": profile, "label": PROFILE_LABELS[profile], "status": status, "model_setup_seconds": 1,
+            "analysis_seconds": 2, "total_seconds": 3, "model_reused": False, "text": "AB12" if status == "ok" else "",
+            "payload": {"detections": []} if status == "ok" else None, "error": None if status == "ok" else "Processing limit reached"}
 
 
 class EntryPointTests(unittest.TestCase):
-    def test_no_arguments_launches_desktop_without_creating_engine(self):
+    def test_no_arguments_launch_desktop_without_engine(self):
         launch = Mock()
-        with patch.dict(sys.modules, {"image_ocr_gui": SimpleNamespace(launch_gui=launch)}), patch.object(
-            image_ocr_main, "OCREngine", side_effect=AssertionError("GUI startup should not load models")
-        ):
-            image_ocr_main.main([])
+        with patch.dict(sys.modules, {"image_ocr_gui": SimpleNamespace(launch_gui=launch)}), patch.object(cli, "OCREngine") as engine:
+            cli.main([])
         launch.assert_called_once_with()
+        engine.assert_not_called()
 
-    def run_cli(self, extra_arguments):
-        image = Image.new("RGB", (50, 40), "white")
+    def run_cli(self, extra):
         engine = Mock()
-        engine.analyze.return_value = {"mode": "all", "detections": []}
-        with patch.object(image_ocr_main, "load_image", return_value=image), patch.object(
-            image_ocr_main, "OCREngine", return_value=engine
-        ), patch.object(image_ocr_main, "save_outputs") as save, redirect_stdout(io.StringIO()):
-            image_ocr_main.main(["sample.png", *extra_arguments])
-        options = engine.analyze.call_args.args[1]
+        with patch.object(cli, "load_image", return_value=Image.new("RGB", (20, 20))), patch.object(cli, "OCREngine", return_value=engine), patch.object(cli, "run_model", return_value=model_row()) as run, patch.object(cli, "save_outputs") as save, redirect_stdout(io.StringIO()) as output:
+            cli.main(["sample.png", *extra])
+        engine.close.assert_called_once_with()
         self.assertEqual(save.call_args.args[2], Path("sample_results"))
-        return options
+        self.assertIn("startup 1.00 s, processing 2.00 s, total 3.00 s", output.getvalue())
+        return run.call_args.args[1]
 
-    def test_image_without_mode_or_prompt_reads_all_text(self):
+    def test_image_defaults_to_all_text_enhanced(self):
         options = self.run_cli([])
         self.assertEqual(options.mode, "all")
         self.assertEqual(options.ocr_profile, "enhanced")
 
-    def test_original_profile_preserves_language_selection(self):
-        options = self.run_cli(["--ocr-profile", "baseline", "--languages", "en,fr"])
-        self.assertEqual(options.ocr_profile, "baseline")
-        self.assertEqual(options.languages, ("en", "fr"))
+    def test_geometry_large_profile_and_budget_forwarded(self):
+        options = self.run_cli(["--mode", "rectangles", "--ocr-profile", "large", "--large-max-seconds", "90"])
+        self.assertEqual(options.mode, "rectangles")
+        self.assertEqual(options.ocr_profile, "large")
+        self.assertEqual(options.large_max_seconds, 90)
 
-    def test_enhanced_rejects_other_languages_without_running_engine(self):
-        with patch.object(image_ocr_main, "OCREngine") as engine:
-            with self.assertRaisesRegex(SystemExit, "English|en|language"):
-                image_ocr_main.main(["sample.png", "--ocr-profile", "enhanced", "--languages", "fr"])
-        engine.assert_not_called()
+    def test_baseline_preserves_languages(self):
+        self.assertEqual(self.run_cli(["--ocr-profile", "baseline", "--languages", "en,fr"]).languages, ("en", "fr"))
 
-    def test_explicit_all_mode_does_not_require_prompt(self):
-        options = self.run_cli(["--mode", "all"])
-        self.assertEqual(options.mode, "all")
-        self.assertEqual(options.prompt, "")
+    def test_removed_detector_flags_are_rejected(self):
+        for flag, value in (("--prompt", "box"), ("--model", "checkpoint"), ("--threshold", "0.3")):
+            with self.subTest(flag=flag), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                cli.parse_args(["sample.png", flag, value])
 
-    def test_legacy_prompt_argument_selects_prompt_mode(self):
-        options = self.run_cli(["--prompt", "rectangular sign"])
-        self.assertEqual(options.mode, "prompt")
-        self.assertEqual(options.prompt, "rectangular sign")
+    def test_compare_exports_every_model_row_and_closes_engine(self):
+        engine = Mock()
+        rows = [model_row(p, "timeout" if p == "large" else "ok") for p in OCR_PROFILES]
+        report = {"models": rows, "wall_seconds": 9}
+        with patch.object(cli, "load_image", return_value=Image.new("RGB", (20, 20))), patch.object(cli, "OCREngine", return_value=engine), patch.object(cli, "compare_image", return_value=report) as compare, patch.object(cli, "save_comparison") as save, patch.object(cli, "save_outputs") as single_save, redirect_stdout(io.StringIO()) as output:
+            cli.main(["sample.png", "--compare-models"])
+        self.assertIs(compare.call_args.kwargs["engine"], engine)
+        self.assertEqual(save.call_args.args[1]["models"], rows)
+        self.assertIn("timeout", output.getvalue())
+        single_save.assert_not_called()
+        engine.close.assert_called_once_with()
+
+    def test_invalid_compare_language_device_never_load_engine(self):
+        for extra in (("--ocr-profile", "baseline", "--languages", "fr"), ("--ocr-profile", "baseline", "--device", "cuda")):
+            with self.subTest(extra=extra), patch.object(cli, "OCREngine") as engine, self.assertRaisesRegex(SystemExit, "English|CPU"):
+                cli.main(["sample.png", "--compare-models", *extra])
+            engine.assert_not_called()
+
+    def test_single_timeout_has_no_success_export(self):
+        engine = Mock()
+        with patch.object(cli, "load_image", return_value=Image.new("RGB", (20, 20))), patch.object(cli, "OCREngine", return_value=engine), patch.object(cli, "run_model", return_value=model_row("large", "timeout")), patch.object(cli, "save_outputs") as save, redirect_stdout(io.StringIO()), self.assertRaisesRegex(SystemExit, "timeout"):
+            cli.main(["sample.png", "--ocr-profile", "large"])
+        save.assert_not_called()
+        engine.close.assert_called_once_with()
 
 
 if __name__ == "__main__":

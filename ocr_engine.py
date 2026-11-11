@@ -1,53 +1,53 @@
 """Shared OCR and region analysis for the desktop interface and CLI.
 
-Model libraries are imported only when needed. Whole-image OCR and geometry
-search never load the prompt detector. One engine can be reused across images.
+Model libraries are imported only when needed. One engine can be reused across
+images. Geometry is detected with OpenCV, independently of the OCR choice.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 import json
 import math
+import time
+import gc
+import os
 from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
-DEFAULT_MODEL = "IDEA-Research/grounding-dino-tiny"
-MODES = ("all", "rectangles", "triangles", "prompt")
+from ocr_profiles import OCR_PROFILES, PROFILE_LABELS
+
+MODES = ("all", "rectangles", "triangles")
 
 
 @dataclass(frozen=True)
 class AnalysisOptions:
     mode: str = "all"
-    prompt: str = ""
-    threshold: float = 0.30
     languages: tuple[str, ...] = ("en",)
     device: str = "auto"
-    model: str = DEFAULT_MODEL
     min_area_ratio: float = 0.001
     ocr_profile: str = "enhanced"
+    large_max_seconds: float = 120.0
 
     def validate(self) -> None:
-        if self.ocr_profile not in ("baseline", "enhanced"):
-            raise ValueError("OCR profile must be baseline or enhanced.")
-        if self.ocr_profile == "enhanced" and tuple(self.languages) != ("en",):
-            raise ValueError("Enhanced OCR is evaluated for English markings. Choose baseline for other OCR languages.")
-        if self.ocr_profile == "enhanced" and self.device == "cuda":
-            raise ValueError("Enhanced OCR uses ONNX Runtime on CPU. Choose auto/cpu, or baseline for CUDA OCR.")
+        if self.ocr_profile not in OCR_PROFILES:
+            raise ValueError(f"OCR profile must be one of {', '.join(OCR_PROFILES)}.")
+        if self.ocr_profile != "baseline" and tuple(self.languages) != ("en",):
+            raise ValueError("Enhanced and large OCR are evaluated for English markings. Choose baseline for other OCR languages.")
+        if self.ocr_profile != "baseline" and self.device == "cuda":
+            raise ValueError("Enhanced and large OCR use CPU inference. Choose auto/cpu, or baseline for CUDA OCR.")
         if self.mode not in MODES:
             raise ValueError(f"Choose an analysis mode from {', '.join(MODES)}.")
-        if self.mode == "prompt" and not self.prompt.strip():
-            raise ValueError("Enter an object description for prompt detection.")
-        if not 0 <= self.threshold <= 1:
-            raise ValueError("Detection threshold must be between 0 and 1.")
         if not 0 < self.min_area_ratio <= 1:
             raise ValueError("Minimum shape area must be greater than 0 and at most 1.")
         if not self.languages or any(not lang.strip() for lang in self.languages):
             raise ValueError("Enter at least one OCR language code, for example en.")
         if self.device not in ("auto", "cpu", "cuda"):
             raise ValueError("Device must be auto, cpu, or cuda.")
+        if not 0 < self.large_max_seconds <= 120:
+            raise ValueError("Large-model analysis budget must be greater than 0 and at most 120 seconds.")
 
 
 def load_image(path: str | Path) -> Image.Image:
@@ -61,28 +61,12 @@ def load_image(path: str | Path) -> Image.Image:
 def select_device(requested: str) -> str:
     import torch
     if requested == "auto":
-        return "cuda" if torch.cuda.is_available() else "cpu"
+        requested = "cuda" if torch.cuda.is_available() else "cpu"
     if requested == "cuda" and not torch.cuda.is_available():
         raise ValueError("CUDA is unavailable. Choose CPU or install a compatible PyTorch build.")
+    if requested == "cpu":
+        torch.set_num_threads(min(4, os.cpu_count() or 2))
     return requested
-
-
-def resolve_model_source(model: str) -> tuple[str, bool]:
-    if not model.strip():
-        raise ValueError("Choose a detector model folder or enter a Hugging Face model ID.")
-    path = Path(model).expanduser()
-    if path.is_file():
-        raise ValueError("Select the model folder containing config.json and SafeTensors weights, not a file.")
-    if path.is_dir():
-        if not (path / "config.json").is_file():
-            raise ValueError(f"Model folder is missing config.json: {path}")
-        if not any((path / name).is_file() for name in ("model.safetensors", "model.safetensors.index.json")):
-            raise ValueError(f"Model folder is missing model.safetensors or its shard index: {path}")
-        return str(path.resolve()), True
-    # Recognize explicit paths so a typo is not treated as a remote model ID.
-    if path.is_absolute() or model.startswith((".", "~")) or "\\" in model or ":" in model:
-        raise ValueError(f"Model folder does not exist: {path}")
-    return model, False
 
 
 def _box(polygon: list[list[float]], size: tuple[int, int]) -> list[int]:
@@ -144,17 +128,30 @@ def geometry_regions(image: Image.Image, shape: str, min_area_ratio: float = 0.0
 
 
 class OCREngine:
-    """Reuse loaded models; callers should serialize analysis on one engine."""
+    """Reuse the active model; switching models releases the previous reader."""
     def __init__(self) -> None:
+        import cv2
+        cv2.setNumThreads(1)
         self._reader_key = None
         self._reader = None
-        self._detector_key = None
-        self._detector = None
+        self.last_timing: dict[str, Any] = {}
+
+    def close(self) -> None:
+        reader = self._reader
+        self._reader, self._reader_key = None, None
+        if reader is not None and callable(getattr(reader, "close", None)):
+            reader.close()
+        del reader
+        gc.collect()
 
     def _get_reader(self, options: AnalysisOptions) -> Any:
         key = (options.ocr_profile, tuple(options.languages), options.device)
         if key != self._reader_key:
-            if options.ocr_profile == "enhanced":
+            self.close()
+            if options.ocr_profile == "large":
+                from large_ocr import LargeOCRReader
+                reader = LargeOCRReader()
+            elif options.ocr_profile == "enhanced":
                 from ocr_readers import IndustrialOCRReader
                 reader = IndustrialOCRReader()
             else:
@@ -163,103 +160,82 @@ class OCREngine:
             self._reader, self._reader_key = reader, key
         return self._reader
 
-    def _get_detector(self, options: AnalysisOptions) -> Any:
-        source, local = resolve_model_source(options.model)
-        key = (source, options.device)
-        if key != self._detector_key:
-            import torch
-            from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
-            device = select_device(options.device)
-            processor = AutoProcessor.from_pretrained(source, local_files_only=local)
-            model = AutoModelForZeroShotObjectDetection.from_pretrained(
-                source, use_safetensors=True, local_files_only=local,
-            ).to(device).eval()
-
-            def detect(image: Image.Image, prompt: str, threshold: float) -> list[dict[str, Any]]:
-                text = prompt.strip().lower().rstrip(".") + "."
-                inputs = processor(images=image, text=text, return_tensors="pt").to(device)
-                with torch.inference_mode():
-                    outputs = model(**inputs)
-                result = processor.post_process_grounded_object_detection(
-                    outputs, input_ids=inputs.input_ids, threshold=threshold,
-                    text_threshold=0.25, target_sizes=[(image.height, image.width)],
-                )[0]
-                labels = result.get("text_labels", [prompt] * len(result["boxes"]))
-                return [
-                    {"box": dict(zip(("xmin", "ymin", "xmax", "ymax"), box.tolist())),
-                     "score": float(score), "label": str(label)}
-                    for box, score, label in zip(result["boxes"], result["scores"], labels)
-                ]
-
-            self._detector, self._detector_key = detect, key
-        return self._detector
-
     @staticmethod
-    def _read(reader: Any, image: Image.Image, offset: tuple[int, int] = (0, 0)) -> list[dict[str, Any]]:
+    def _read(reader: Any, image: Image.Image, offset: tuple[int, int] = (0, 0), deadline: float | None = None) -> list[dict[str, Any]]:
+        kwargs = {"detail": 1, "paragraph": False}
+        if deadline is not None and getattr(reader, "supports_deadline", False):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("Large OCR image analysis reached its time budget.")
+            kwargs["timeout"] = remaining
         lines = []
-        for polygon, text, confidence in reader.readtext(np.asarray(image), detail=1, paragraph=False):
+        for polygon, text, confidence in reader.readtext(np.asarray(image), **kwargs):
             if not str(text).strip():
                 continue
             lines.append({
-                "text": str(text), "confidence": float(confidence),
+                "text": str(text), "confidence": float(confidence) if confidence is not None else None,
                 "polygon": [[float(x) + offset[0], float(y) + offset[1]] for x, y in polygon],
             })
         return lines
 
     def analyze(self, image: Image.Image, options: AnalysisOptions, progress: Callable[[str], None] = lambda _: None) -> dict[str, Any]:
-        options.validate()
-        image = image.convert("RGB")
-        progress("Loading OCR model (first use may download weights)…")
-        reader = self._get_reader(options)
-        results = []
-        diagnostics = []
-        if options.mode == "all":
-            progress("Reading text across the whole image…")
-            for line in self._read(reader, image):
-                results.append({
-                    "label": "text", "confidence": line["confidence"],
-                    "box_xyxy": _box(line["polygon"], image.size), "polygon": line["polygon"],
-                    "text": line["text"], "ocr_lines": [line],
-                })
-            if getattr(reader, "last_details", None):
-                diagnostics.append({"region": "whole_image", **reader.last_details})
-        else:
-            if options.mode == "prompt":
-                progress("Loading detector and locating matching objects…")
-                detector = self._get_detector(options)
-                regions = []
-                for detection in detector(image, options.prompt, options.threshold):
-                    b = detection["box"]
-                    box = _box([[b["xmin"], b["ymin"]], [b["xmax"], b["ymax"]]], image.size)
-                    if box[2] > box[0] and box[3] > box[1]:
-                        regions.append({"box_xyxy": box, "polygon": None,
-                                        "label": detection.get("label", options.prompt),
-                                        "confidence": float(detection["score"])})
+        started = time.perf_counter()
+        self.last_timing = {"model_setup_seconds": 0.0, "analysis_seconds": 0.0,
+                            "total_seconds": 0.0, "model_reused": False}
+        analysis_started = None
+        try:
+            options.validate()
+            image = image.convert("RGB")
+            self.last_timing["model_reused"] = self._reader_key == (options.ocr_profile, tuple(options.languages), options.device)
+            progress("Loading OCR model; first use may download weights. Large-model startup is timed separately…")
+            reader = self._get_reader(options)
+            self.last_timing["model_setup_seconds"] = time.perf_counter() - started
+            analysis_started = time.perf_counter()
+            deadline = time.monotonic() + options.large_max_seconds if options.ocr_profile == "large" else None
+            results, diagnostics = [], []
+            if options.mode == "all":
+                progress("Reading text across the whole image…")
+                for line in self._read(reader, image, deadline=deadline):
+                    results.append({"label": "text", "confidence": line["confidence"],
+                                    "box_xyxy": _box(line["polygon"], image.size), "polygon": line["polygon"],
+                                    "text": line["text"], "ocr_lines": [line]})
+                if getattr(reader, "last_details", None):
+                    diagnostics.append({"region": "whole_image", **reader.last_details})
             else:
                 progress(f"Finding {options.mode}…")
                 regions = geometry_regions(image, options.mode, options.min_area_ratio)
-            for index, region in enumerate(regions, start=1):
-                progress(f"Reading text in region {index} of {len(regions)}…")
-                x1, y1, x2, y2 = region["box_xyxy"]
-                crop = image.crop((x1, y1, x2, y2))
-                if region["polygon"]:
-                    # Mask corners outside a triangle/rotated rectangle before OCR.
+                for index, region in enumerate(regions, start=1):
+                    progress(f"Reading text in region {index} of {len(regions)}…")
+                    x1, y1, x2, y2 = region["box_xyxy"]
+                    crop = image.crop((x1, y1, x2, y2))
                     mask = Image.new("L", crop.size)
                     ImageDraw.Draw(mask).polygon([(x - x1, y - y1) for x, y in region["polygon"]], fill=255)
                     crop = Image.composite(crop, Image.new("RGB", crop.size, "white"), mask)
-                lines = self._read(reader, crop, offset=(x1, y1))
-                if getattr(reader, "last_details", None):
-                    diagnostics.append({"region": index, "crop_origin": [x1, y1],
-                                        "candidate_coordinates": "relative to crop", **reader.last_details})
-                results.append({**region, "text": "\n".join(line["text"] for line in lines), "ocr_lines": lines})
-        for index, result in enumerate(results, start=1):
-            result["id"] = index
-        progress(f"Complete: {len(results)} region(s), {sum(len(r['ocr_lines']) for r in results)} text line(s).")
-        return {"mode": options.mode, "prompt": options.prompt if options.mode == "prompt" else "",
-                "model": options.model if options.mode == "prompt" else None,
-                "threshold": options.threshold, "languages": list(options.languages),
-                "min_area_ratio": options.min_area_ratio, "image_size": list(image.size), "detections": results,
-                "ocr_profile": options.ocr_profile, "ocr_diagnostics": diagnostics}
+                    lines = self._read(reader, crop, offset=(x1, y1), deadline=deadline)
+                    if getattr(reader, "last_details", None):
+                        diagnostics.append({"region": index, "crop_origin": [x1, y1],
+                                            "candidate_coordinates": "relative to crop", **reader.last_details})
+                    results.append({**region, "text": "\n".join(line["text"] for line in lines), "ocr_lines": lines})
+            for index, result in enumerate(results, start=1):
+                result["id"] = index
+            progress(f"Complete: {len(results)} region(s), {sum(len(r['ocr_lines']) for r in results)} text line(s).")
+            return {"mode": options.mode, "languages": list(options.languages), "requested_device": options.device,
+                    "min_area_ratio": options.min_area_ratio, "image_size": list(image.size), "detections": results,
+                    "ocr_profile": options.ocr_profile, "ocr_model": PROFILE_LABELS[options.ocr_profile],
+                    "ocr_diagnostics": diagnostics, "timing": self.last_timing,
+                    "warnings": ["Large OCR reached its output-token limit; text may be incomplete."]
+                    if any(d.get("token_limit_reached") for d in diagnostics) else []}
+        except (TimeoutError, RuntimeError):
+            if options.ocr_profile == "large":
+                self.close()
+            raise
+        finally:
+            ended = time.perf_counter()
+            self.last_timing["total_seconds"] = ended - started
+            if analysis_started is None:
+                self.last_timing["model_setup_seconds"] = ended - started
+            else:
+                self.last_timing["analysis_seconds"] = ended - analysis_started
 
 
 def annotate_image(image: Image.Image, results: list[dict[str, Any]]) -> Image.Image:

@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-11T12:58:50.370867+00:00",
+  "engine": "Florence-2 large (CPU, 120 s budget)",
+  "profile": "large",
+  "configuration": {
+    "mode": "all",
+    "languages": [
+      "en"
+    ],
+    "device": "cpu",
+    "min_area_ratio": 0.001,
+    "ocr_profile": "large",
+    "large_max_seconds": 120
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "packages": {
+      "easyocr": "1.7.2",
+      "rapidocr": "3.10.0",
+      "onnxruntime": "1.31.1",
+      "torch": "2.7.1+cpu",
+      "torchvision": "0.22.1+cpu",
+      "numpy": "2.5.4",
+      "opencv-python-headless": "4.14.0.94",
+      "opencv-python": null,
+      "Pillow": "13.0.0",
+      "transformers": "4.57.6"
+    },
+    "ocr_engine_sha256": "3b65160fa34b1d14fe3904e82c6d4bfb4d9810704e078b61f534aa78289f33e4",
+    "source_sha256": {
+      "ocr_engine.py": "3b65160fa34b1d14fe3904e82c6d4bfb4d9810704e078b61f534aa78289f33e4",
+      "ocr_readers.py": "5b217a9752346c6e6b7b7d9d4045f90ba7e1c766dee8c49260d2f8b68388a306",
+      "ocr_model_assets.py": "706ca0982619ba82e6e703b7b5cd0459c369e55d096fd246b9ba9d3022b0c73a",
+      "large_ocr.py": "37083f11aa5e4ebad295688066c3616294bc8c609146e3bd97878f4f6f63c0c7",
+      "ocr_profiles.py": "dac37b707660acd5adeb19a2ce7b0b7da5566b3986d431c7a747528d88f18274",
+      "ocr_comparison.py": "0822aa833f7b678faaa9b106561c4523ed6e8abe8f3967b26ea48226fc823528"
+    }
+  },
+  "dataset": {
+    "labels_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img_labels.txt",
+    "labels_sha256": "4bf477ae89c4dfd2ed76d8eda5badfd0837734c2c712455b927914ff9a38cb1d",
+    "images_directory": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images",
+    "image_sha256": {
+      "id_img1": "250af935b6c623422f74770d672165a35f4366d0e0361cb2abc1aff8143e7f8a",
+      "id_img12": "13806c05ae86e9f97c7200ef505a3fb410c1073bbe171b7abdf19457db8670d2",
+      "id_img15": "07e7678137bc95087b52c06c1dbf30ec4293870af9cae58a7ce6bce72959d015"
+    }
+  },
+  "evaluation_scope": "Full extracted text versus full image-level transcription; incidental background text counts as insertions. Labels are used only for scoring. Failed images are scored as empty predictions. Primary metric: corpus alphanumeric CER (NFKC/casefold, letters and digits only). Strict CER retains punctuation and collapses whitespace. CER may exceed 1. First-image timing includes lazy model initialization/downloads; subsequent images reuse the engine.",
+  "wall_seconds": 46.117494943000565,
+  "summary": {
+    "image_count": 3,
+    "successful_images": 3,
+    "failed_images": 0,
+    "total_image_seconds": 45.92067586899884,
+    "metrics": {
+      "strict": {
+        "character_edits": 21,
+        "reference_characters": 76,
+        "corpus_cer": 0.27631578947368424,
+        "mean_image_cer": 0.34868421052631576,
+        "exact_match_count": 1,
+        "exact_match_rate": 0.3333333333333333
+      },
+      "alnum": {
+        "character_edits": 19,
+        "reference_characters": 62,
+        "corpus_cer": 0.3064516129032258,
+        "mean_image_cer": 0.35176651305683565,
+        "exact_match_count": 1,
+        "exact_match_rate": 0.3333333333333333
+      }
+    }
+  },
+  "images": [
+    {
+      "image_id": "id_img1",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg",
+      "reference": "1921008-1208 REV A1 HT# 336909",
+      "prediction": "1921008-1208 REV A1\n\nHT# 336909",
+      "metrics": {
+        "strict": {
+          "reference": "1921008-1208 rev a1 ht# 336909",
+          "prediction": "1921008-1208 rev a1 ht# 336909",
+          "character_edits": 0,
+          "reference_characters": 30,
+          "cer": 0.0,
+          "exact_match": true
+        },
+        "alnum": {
+          "reference": "19210081208reva1ht336909",
+          "prediction": "19210081208reva1ht336909",
+          "character_edits": 0,
+          "reference_characters": 24,
+          "cer": 0.0,
+          "exact_match": true
+        }
+      },
+      "seconds": 23.088326317999417,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "florence-community/Florence-2-large-ft",
+          "revision": null,
+          "local_model_directory": "/workspace/scratch/b3bb21e5efad/large_ocr_experiments/florence2-large-ft",
+          "task": "<OCR_WITH_REGION>",
+          "raw_generation": "</s><s><s><s>1921008-1208 REV A1<loc_372><loc_549><loc_699><loc_543><loc_700><loc_603><loc_372><loc_609>HT# 336909<loc_434><loc_626><loc_627><loc_625><loc_627><loc_668><loc_434><loc_669></s>",
+          "max_new_tokens": 512,
+          "token_limit_reached": false,
+          "confidence_available": false,
+          "inference_budget_seconds": 119.99998952999977
+        }
+      ],
+      "timing": {
+        "model_setup_seconds": 10.355759649999527,
+        "analysis_seconds": 12.581247497000732,
+        "total_seconds": 22.93700978400011,
+        "model_reused": false
+      }
+    },
+    {
+      "image_id": "id_img12",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img12.jpg",
+      "reference": "V86 288R86288- SA-182MF12CL26 QT UT MT",
+      "prediction": "U86 23OR862525-2\n\nSA-123MF1201\n\nUT MT",
+      "metrics": {
+        "strict": {
+          "reference": "v86 288r86288- sa-182mf12cl26 qt ut mt",
+          "prediction": "u86 23or862525-2 sa-123mf1201 ut mt",
+          "character_edits": 16,
+          "reference_characters": 38,
+          "cer": 0.42105263157894735,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "v86288r86288sa182mf12cl26qtutmt",
+          "prediction": "u8623or8625252sa123mf1201utmt",
+          "character_edits": 15,
+          "reference_characters": 31,
+          "cer": 0.4838709677419355,
+          "exact_match": false
+        }
+      },
+      "seconds": 12.319455555999411,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "florence-community/Florence-2-large-ft",
+          "revision": null,
+          "local_model_directory": "/workspace/scratch/b3bb21e5efad/large_ocr_experiments/florence2-large-ft",
+          "task": "<OCR_WITH_REGION>",
+          "raw_generation": "</s><s><s><s>U86 23OR862525-2<loc_363><loc_428><loc_700><loc_428><loc_700><loc_478><loc_363><loc_476>SA-123MF1201<loc_365><loc_468><loc_625><loc_480><loc_624><loc_520><loc_364><loc_505>UT MT<loc_440><loc_520><loc_541><loc_528><loc_540><loc_565><loc_438><loc_557></s>",
+          "max_new_tokens": 512,
+          "token_limit_reached": false,
+          "confidence_available": false,
+          "inference_budget_seconds": 119.99999417599975
+        }
+      ],
+      "timing": {
+        "model_setup_seconds": 0.00018496000029699644,
+        "analysis_seconds": 12.306428615999721,
+        "total_seconds": 12.306614529000399,
+        "model_reused": true
+      }
+    },
+    {
+      "image_id": "id_img15",
+      "image_path": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img15.jpg",
+      "reference": "4314 LEM",
+      "prediction": "4313",
+      "metrics": {
+        "strict": {
+          "reference": "4314 lem",
+          "prediction": "4313",
+          "character_edits": 5,
+          "reference_characters": 8,
+          "cer": 0.625,
+          "exact_match": false
+        },
+        "alnum": {
+          "reference": "4314lem",
+          "prediction": "4313",
+          "character_edits": 4,
+          "reference_characters": 7,
+          "cer": 0.5714285714285714,
+          "exact_match": false
+        }
+      },
+      "seconds": 10.512893995000013,
+      "error": null,
+      "ocr_diagnostics": [
+        {
+          "region": "whole_image",
+          "model": "florence-community/Florence-2-large-ft",
+          "revision": null,
+          "local_model_directory": "/workspace/scratch/b3bb21e5efad/large_ocr_experiments/florence2-large-ft",
+          "task": "<OCR_WITH_REGION>",
+          "raw_generation": "</s><s><s><s>4313<loc_355><loc_270><loc_592><loc_286><loc_589><loc_364><loc_352><loc_347></s>",
+          "max_new_tokens": 512,
+          "token_limit_reached": false,
+          "confidence_available": false,
+          "inference_budget_seconds": 119.99995356
+        }
+      ],
+      "timing": {
+        "model_setup_seconds": 0.0008311809997394448,
+        "analysis_seconds": 10.435444743000517,
+        "total_seconds": 10.436276268000256,
+        "model_reused": true
+      }
+    }
+  ]
+}

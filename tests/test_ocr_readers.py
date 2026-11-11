@@ -192,7 +192,7 @@ class ReaderLoadingTests(unittest.TestCase):
     def test_enhanced_rejects_cuda_with_clear_cpu_explanation(self):
         engine = OCREngine()
         with patch.object(engine, "_get_reader") as loader:
-            with self.assertRaisesRegex(ValueError, "ONNX Runtime on CPU"):
+            with self.assertRaisesRegex(ValueError, "CPU inference"):
                 engine.analyze(Image.new("RGB", (20, 20)), AnalysisOptions(device="cuda"))
         loader.assert_not_called()
 

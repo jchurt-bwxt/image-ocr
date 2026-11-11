@@ -2,6 +2,8 @@
 from tkinter import messagebox
 
 if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support()
     try:
         from image_ocr_gui import launch_gui
         launch_gui()

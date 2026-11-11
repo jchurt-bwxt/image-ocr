@@ -1,0 +1,722 @@
+{
+  "image_size": [
+    1500,
+    1125
+  ],
+  "mode": "all",
+  "models": [
+    {
+      "profile": "baseline",
+      "label": "EasyOCR (small / baseline)",
+      "status": "ok",
+      "total_seconds": 37.88498576800066,
+      "model_setup_seconds": 24.334263687000202,
+      "analysis_seconds": 13.550636883000152,
+      "model_reused": false,
+      "text": "1921008-1208 \n\nAI\n\nHt# 336909\n\nREV _",
+      "payload": {
+        "mode": "all",
+        "languages": [
+          "en"
+        ],
+        "min_area_ratio": 0.001,
+        "image_size": [
+          1500,
+          1125
+        ],
+        "detections": [
+          {
+            "label": "text",
+            "confidence": 0.886864936940055,
+            "box_xyxy": [
+              548,
+              613,
+              904,
+              704
+            ],
+            "polygon": [
+              [
+                548.0,
+                613.0
+              ],
+              [
+                904.0,
+                613.0
+              ],
+              [
+                904.0,
+                704.0
+              ],
+              [
+                548.0,
+                704.0
+              ]
+            ],
+            "text": "1921008-1208 ",
+            "ocr_lines": [
+              {
+                "text": "1921008-1208 ",
+                "confidence": 0.886864936940055,
+                "polygon": [
+                  [
+                    548.0,
+                    613.0
+                  ],
+                  [
+                    904.0,
+                    613.0
+                  ],
+                  [
+                    904.0,
+                    704.0
+                  ],
+                  [
+                    548.0,
+                    704.0
+                  ]
+                ]
+              }
+            ],
+            "id": 1
+          },
+          {
+            "label": "text",
+            "confidence": 0.9151292644340004,
+            "box_xyxy": [
+              992,
+              610,
+              1052,
+              664
+            ],
+            "polygon": [
+              [
+                992.0,
+                610.0
+              ],
+              [
+                1052.0,
+                610.0
+              ],
+              [
+                1052.0,
+                664.0
+              ],
+              [
+                992.0,
+                664.0
+              ]
+            ],
+            "text": "AI",
+            "ocr_lines": [
+              {
+                "text": "AI",
+                "confidence": 0.9151292644340004,
+                "polygon": [
+                  [
+                    992.0,
+                    610.0
+                  ],
+                  [
+                    1052.0,
+                    610.0
+                  ],
+                  [
+                    1052.0,
+                    664.0
+                  ],
+                  [
+                    992.0,
+                    664.0
+                  ]
+                ]
+              }
+            ],
+            "id": 2
+          },
+          {
+            "label": "text",
+            "confidence": 0.7548554259309219,
+            "box_xyxy": [
+              646,
+              697,
+              950,
+              765
+            ],
+            "polygon": [
+              [
+                646.0,
+                697.0
+              ],
+              [
+                950.0,
+                697.0
+              ],
+              [
+                950.0,
+                765.0
+              ],
+              [
+                646.0,
+                765.0
+              ]
+            ],
+            "text": "Ht# 336909",
+            "ocr_lines": [
+              {
+                "text": "Ht# 336909",
+                "confidence": 0.7548554259309219,
+                "polygon": [
+                  [
+                    646.0,
+                    697.0
+                  ],
+                  [
+                    950.0,
+                    697.0
+                  ],
+                  [
+                    950.0,
+                    765.0
+                  ],
+                  [
+                    646.0,
+                    765.0
+                  ]
+                ]
+              }
+            ],
+            "id": 3
+          },
+          {
+            "label": "text",
+            "confidence": 0.5188139977690012,
+            "box_xyxy": [
+              899,
+              618,
+              1004,
+              687
+            ],
+            "polygon": [
+              [
+                899.2599556283028,
+                630.2578535733992
+              ],
+              [
+                1000.931135006801,
+                618.5818268702857
+              ],
+              [
+                1003.7400443716972,
+                674.7421464266008
+              ],
+              [
+                903.068864993199,
+                686.4181731297143
+              ]
+            ],
+            "text": "REV _",
+            "ocr_lines": [
+              {
+                "text": "REV _",
+                "confidence": 0.5188139977690012,
+                "polygon": [
+                  [
+                    899.2599556283028,
+                    630.2578535733992
+                  ],
+                  [
+                    1000.931135006801,
+                    618.5818268702857
+                  ],
+                  [
+                    1003.7400443716972,
+                    674.7421464266008
+                  ],
+                  [
+                    903.068864993199,
+                    686.4181731297143
+                  ]
+                ]
+              }
+            ],
+            "id": 4
+          }
+        ],
+        "ocr_profile": "baseline",
+        "ocr_model": "EasyOCR (small / baseline)",
+        "ocr_diagnostics": [],
+        "timing": {
+          "model_setup_seconds": 24.334263687000202,
+          "analysis_seconds": 13.550636883000152,
+          "total_seconds": 37.8849032220005,
+          "model_reused": false
+        },
+        "warnings": [],
+        "image": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg"
+      },
+      "error": null
+    },
+    {
+      "profile": "enhanced",
+      "label": "RapidOCR PP-OCRv6 (enhanced)",
+      "status": "ok",
+      "total_seconds": 66.16454712700033,
+      "model_setup_seconds": 0.9776240870005495,
+      "analysis_seconds": 65.18677004700021,
+      "model_reused": false,
+      "text": "1921008-1208 REV A1\n\nHT#336909",
+      "payload": {
+        "mode": "all",
+        "languages": [
+          "en"
+        ],
+        "min_area_ratio": 0.001,
+        "image_size": [
+          1500,
+          1125
+        ],
+        "detections": [
+          {
+            "label": "text",
+            "confidence": 0.99692,
+            "box_xyxy": [
+              539,
+              595,
+              1067,
+              702
+            ],
+            "polygon": [
+              [
+                539.0,
+                604.0
+              ],
+              [
+                1065.0,
+                595.0
+              ],
+              [
+                1067.0,
+                693.0
+              ],
+              [
+                541.0,
+                702.0
+              ]
+            ],
+            "text": "1921008-1208 REV A1",
+            "ocr_lines": [
+              {
+                "text": "1921008-1208 REV A1",
+                "confidence": 0.99692,
+                "polygon": [
+                  [
+                    539.0,
+                    604.0
+                  ],
+                  [
+                    1065.0,
+                    595.0
+                  ],
+                  [
+                    1067.0,
+                    693.0
+                  ],
+                  [
+                    541.0,
+                    702.0
+                  ]
+                ]
+              }
+            ],
+            "id": 1
+          },
+          {
+            "label": "text",
+            "confidence": 0.99994,
+            "box_xyxy": [
+              643,
+              693,
+              950,
+              761
+            ],
+            "polygon": [
+              [
+                643.0,
+                693.0
+              ],
+              [
+                950.0,
+                693.0
+              ],
+              [
+                950.0,
+                761.0
+              ],
+              [
+                643.0,
+                761.0
+              ]
+            ],
+            "text": "HT#336909",
+            "ocr_lines": [
+              {
+                "text": "HT#336909",
+                "confidence": 0.99994,
+                "polygon": [
+                  [
+                    643.0,
+                    693.0
+                  ],
+                  [
+                    950.0,
+                    693.0
+                  ],
+                  [
+                    950.0,
+                    761.0
+                  ],
+                  [
+                    643.0,
+                    761.0
+                  ]
+                ]
+              }
+            ],
+            "id": 2
+          }
+        ],
+        "ocr_profile": "enhanced",
+        "ocr_model": "RapidOCR PP-OCRv6 (enhanced)",
+        "ocr_diagnostics": [
+          {
+            "region": "whole_image",
+            "model": "PP-OCRv6-medium (RapidOCR 3.10.0 / ONNX Runtime CPU)",
+            "selected_preprocessing": "original",
+            "selection_score": 6.815937419118706,
+            "candidates": [
+              {
+                "preprocessing": "original",
+                "selection_score": 6.815937419118706,
+                "lines": [
+                  {
+                    "text": "1921008-1208 REV A1",
+                    "confidence": 0.99692,
+                    "polygon": [
+                      [
+                        539.0,
+                        604.0
+                      ],
+                      [
+                        1065.0,
+                        595.0
+                      ],
+                      [
+                        1067.0,
+                        693.0
+                      ],
+                      [
+                        541.0,
+                        702.0
+                      ]
+                    ]
+                  },
+                  {
+                    "text": "HT#336909",
+                    "confidence": 0.99994,
+                    "polygon": [
+                      [
+                        643.0,
+                        693.0
+                      ],
+                      [
+                        950.0,
+                        693.0
+                      ],
+                      [
+                        950.0,
+                        761.0
+                      ],
+                      [
+                        643.0,
+                        761.0
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "preprocessing": "clahe",
+                "selection_score": 6.676612290750251,
+                "lines": [
+                  {
+                    "text": "1921008-1208 REV A1",
+                    "confidence": 0.97336,
+                    "polygon": [
+                      [
+                        538.0,
+                        604.0
+                      ],
+                      [
+                        1065.0,
+                        594.0
+                      ],
+                      [
+                        1067.0,
+                        693.0
+                      ],
+                      [
+                        540.0,
+                        703.0
+                      ]
+                    ]
+                  },
+                  {
+                    "text": "HT# 336909",
+                    "confidence": 0.984,
+                    "polygon": [
+                      [
+                        641.0,
+                        695.0
+                      ],
+                      [
+                        951.0,
+                        691.0
+                      ],
+                      [
+                        952.0,
+                        759.0
+                      ],
+                      [
+                        642.0,
+                        764.0
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "preprocessing": "blackhat",
+                "selection_score": 6.732221641346596,
+                "lines": [
+                  {
+                    "text": "1921008=1208 REV A1",
+                    "confidence": 0.97708,
+                    "polygon": [
+                      [
+                        540.0,
+                        604.0
+                      ],
+                      [
+                        1064.0,
+                        594.0
+                      ],
+                      [
+                        1066.0,
+                        693.0
+                      ],
+                      [
+                        542.0,
+                        703.0
+                      ]
+                    ]
+                  },
+                  {
+                    "text": "HT# 336909",
+                    "confidence": 0.9984,
+                    "polygon": [
+                      [
+                        640.0,
+                        687.0
+                      ],
+                      [
+                        952.0,
+                        684.0
+                      ],
+                      [
+                        953.0,
+                        762.0
+                      ],
+                      [
+                        641.0,
+                        766.0
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "timing": {
+          "model_setup_seconds": 0.9776240870005495,
+          "analysis_seconds": 65.18677004700021,
+          "total_seconds": 66.16441475500051,
+          "model_reused": false
+        },
+        "warnings": [],
+        "image": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg"
+      },
+      "error": null
+    },
+    {
+      "profile": "large",
+      "label": "Florence-2 large (CPU, 120 s budget)",
+      "status": "ok",
+      "total_seconds": 23.897677394999846,
+      "model_setup_seconds": 9.731938779000302,
+      "analysis_seconds": 14.165554864000114,
+      "model_reused": false,
+      "text": "1921008-1208 REV A1\n\nHT# 336909",
+      "payload": {
+        "mode": "all",
+        "languages": [
+          "en"
+        ],
+        "min_area_ratio": 0.001,
+        "image_size": [
+          1500,
+          1125
+        ],
+        "detections": [
+          {
+            "label": "text",
+            "confidence": null,
+            "box_xyxy": [
+              558,
+              611,
+              1050,
+              685
+            ],
+            "polygon": [
+              [
+                558.0,
+                618.0
+              ],
+              [
+                1049.0,
+                611.0
+              ],
+              [
+                1050.0,
+                678.0
+              ],
+              [
+                558.0,
+                685.0
+              ]
+            ],
+            "text": "1921008-1208 REV A1",
+            "ocr_lines": [
+              {
+                "text": "1921008-1208 REV A1",
+                "confidence": null,
+                "polygon": [
+                  [
+                    558.0,
+                    618.0
+                  ],
+                  [
+                    1049.0,
+                    611.0
+                  ],
+                  [
+                    1050.0,
+                    678.0
+                  ],
+                  [
+                    558.0,
+                    685.0
+                  ]
+                ]
+              }
+            ],
+            "id": 1
+          },
+          {
+            "label": "text",
+            "confidence": null,
+            "box_xyxy": [
+              651,
+              703,
+              941,
+              753
+            ],
+            "polygon": [
+              [
+                651.0,
+                704.0
+              ],
+              [
+                941.0,
+                703.0
+              ],
+              [
+                941.0,
+                752.0
+              ],
+              [
+                651.0,
+                753.0
+              ]
+            ],
+            "text": "HT# 336909",
+            "ocr_lines": [
+              {
+                "text": "HT# 336909",
+                "confidence": null,
+                "polygon": [
+                  [
+                    651.0,
+                    704.0
+                  ],
+                  [
+                    941.0,
+                    703.0
+                  ],
+                  [
+                    941.0,
+                    752.0
+                  ],
+                  [
+                    651.0,
+                    753.0
+                  ]
+                ]
+              }
+            ],
+            "id": 2
+          }
+        ],
+        "ocr_profile": "large",
+        "ocr_model": "Florence-2 large (CPU, 120 s budget)",
+        "ocr_diagnostics": [
+          {
+            "region": "whole_image",
+            "model": "florence-community/Florence-2-large-ft",
+            "revision": null,
+            "local_model_directory": "/workspace/scratch/b3bb21e5efad/large_ocr_experiments/florence2-large-ft",
+            "task": "<OCR_WITH_REGION>",
+            "raw_generation": "</s><s><s><s>1921008-1208 REV A1<loc_372><loc_549><loc_699><loc_543><loc_700><loc_603><loc_372><loc_609>HT# 336909<loc_434><loc_626><loc_627><loc_625><loc_627><loc_668><loc_434><loc_669></s>",
+            "max_new_tokens": 512,
+            "token_limit_reached": false,
+            "confidence_available": false,
+            "inference_budget_seconds": 119.99988535400007
+          }
+        ],
+        "timing": {
+          "model_setup_seconds": 9.731938779000302,
+          "analysis_seconds": 14.165554864000114,
+          "total_seconds": 23.8975359570004,
+          "model_reused": false
+        },
+        "warnings": [],
+        "image": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg"
+      },
+      "error": null
+    }
+  ],
+  "wall_seconds": 127.94911622000018,
+  "timing_scope": "Loaded image to OCR result; model setup/download is included in total and listed separately. File selection, common image decoding, preview rendering, and export are excluded.",
+  "large_inference_budget_seconds": 120.0,
+  "image": "/workspace/scratch/b3bb21e5efad/image-ocr/sample_images/id_img1.jpg"
+}

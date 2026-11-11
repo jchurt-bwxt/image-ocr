@@ -1,5 +1,7 @@
 # Industrial-marking OCR evaluation
 
+For the current three-model selector, CPU time comparisons, and the larger Florence-2 option, see [model selection and CPU comparisons](LARGE_MODEL.md). This page records the earlier 15-image model-selection experiment.
+
 Evaluated the 15 images and supplied transcriptions in `sample_images/` from repository snapshot `116b5364d72cdfc37f19de6560aa0c7984a0d8b6`. The photographs contain faint engraving, dot-peen marks, curved surfaces, glare, handwriting, low contrast, and sideways text. No images or labels were changed. No training or fine-tuning was performed.
 
 ## Results
@@ -22,7 +24,7 @@ On this CPU with two inference threads and cached weights, the recorded original
 - RapidOCR **3.10.0**, ONNX Runtime **1.31.1** tested, PP-OCRv6 **medium** detection and recognition, PP-OCRv4 mobile text-orientation classifier.
 - Three whole-image/crop passes at the same dimensions: original RGB; grayscale CLAHE (`clipLimit=2`, `tileGridSize=(8,8)`); inverted normalized morphological blackhat (`25 × 25`).
 - Choose one complete pass maximizing `sum(sqrt(number_of_alphanumeric_characters) * confidence)` across its text lines. Ties prefer the original. This fixed rule reads only OCR output and confidence; it cannot access the expected labels, filenames, or image-specific corrections.
-- Retain all three raw candidates in exported `ocr_diagnostics` so they can be reviewed. Candidate polygons are relative to a crop when a geometry/object search is used; final OCR polygons are translated to full-image coordinates.
+- Retain all three raw candidates in exported `ocr_diagnostics` so they can be reviewed. Candidate polygons are relative to a crop when a geometry search is used; final OCR polygons are translated to full-image coordinates.
 - Explicitly disable ONNX telemetry before session creation. The integrated enhanced benchmark was run under `offline_evaluate.py`, which denies socket/connect/send syscalls at the OS level after weights have been cached. The run completed with zero inference failures.
 
 The medium model outperformed the small default and the tested PP-OCRv5 alternatives. We also tested global 90°/270° rotations, lowered EasyOCR detection thresholds, and spatial unions of multiple passes; these tended to add false text or disrupt reading order. They are not enabled in the selected profile.

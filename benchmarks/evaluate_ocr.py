@@ -171,11 +171,13 @@ def evaluate_cases(
         start = clock()
         prediction, error = "", None
         diagnostics = []
+        timing = {}
         try:
             image = image_loader(case.image_path)
             payload = engine.analyze(image, options)
             prediction = text_extractor(payload)
             diagnostics = payload.get("ocr_diagnostics", [])
+            timing = payload.get("timing", {})
         except Exception as exc:
             error = f"{type(exc).__name__}: {exc}"
             progress(f"  ERROR: {error}")
@@ -190,6 +192,7 @@ def evaluate_cases(
             "seconds": elapsed,
             "error": error,
             "ocr_diagnostics": diagnostics,
+            "timing": timing,
         })
         progress(f"  Alnum CER: {metrics['alnum']['cer']:.3f}; {elapsed:.2f} s")
     return results
@@ -209,7 +212,9 @@ def environment_info() -> dict[str, Any]:
             packages[package] = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
             packages[package] = None
-    source_hashes = {name: file_sha256(ROOT / name) for name in ("ocr_engine.py", "ocr_readers.py")}
+    source_hashes = {name: file_sha256(ROOT / name) for name in (
+        "ocr_engine.py", "ocr_readers.py", "ocr_model_assets.py", "large_ocr.py", "ocr_profiles.py", "ocr_comparison.py",
+    )}
     return {
         "python": sys.version,
         "platform": platform.platform(),
@@ -233,7 +238,9 @@ def build_options(profile: str, device: str, languages: tuple[str, ...]):
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--profile", choices=("baseline", "enhanced"), default="baseline")
+    from ocr_profiles import OCR_PROFILES, PROFILE_LABELS
+    parser.add_argument("--profile", choices=OCR_PROFILES, default="baseline")
+    parser.add_argument("--large-max-seconds", type=float, default=120)
     parser.add_argument("--labels", type=Path, default=ROOT / "sample_images" / "id_img_labels.txt")
     parser.add_argument("--images", type=Path, default=ROOT / "sample_images")
     parser.add_argument("--output", type=Path, help="JSON report path (default: benchmarks/results/<profile>.json)")
@@ -251,16 +258,23 @@ def main(argv: list[str] | None = None) -> int:
             cases = [case for case in cases if case.image_id.casefold() in selected]
         languages = tuple(value.strip() for value in args.languages.split(",") if value.strip())
         options = build_options(args.profile, args.device, languages)
+        from dataclasses import replace
+        options = replace(options, large_max_seconds=args.large_max_seconds)
+        options.validate()
     except ValueError as exc:
         parser.error(str(exc))
 
     from ocr_engine import OCREngine
     start = time.perf_counter()
-    results = evaluate_cases(cases, OCREngine(), options)
+    engine = OCREngine()
+    try:
+        results = evaluate_cases(cases, engine, options)
+    finally:
+        engine.close()
     report = {
         "schema_version": 1,
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "engine": f"{'RapidOCR' if args.profile == 'enhanced' else 'EasyOCR'} via ocr_engine.OCREngine",
+        "engine": PROFILE_LABELS[args.profile],
         "profile": args.profile,
         "configuration": asdict(options),
         "environment": environment_info(),

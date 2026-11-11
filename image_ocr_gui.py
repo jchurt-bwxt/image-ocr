@@ -6,6 +6,8 @@ import json
 import queue
 import threading
 import tkinter as tk
+import time
+from dataclasses import replace
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
@@ -19,17 +21,14 @@ from ocr_engine import (
     load_image,
     save_outputs,
 )
+from ocr_comparison import run_model, save_comparison
+from ocr_profiles import OCR_PROFILES, PROFILE_LABELS
 
 
 MODES = {
     "All text in image": "all",
     "Text inside rectangles": "rectangles",
     "Text inside triangles": "triangles",
-    "Text inside objects matching a prompt": "prompt",
-}
-OCR_PROFILES = {
-    "Difficult markings (enhanced)": "enhanced",
-    "Original EasyOCR (baseline)": "baseline",
 }
 
 
@@ -39,7 +38,7 @@ class OCRApp:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.root.title("Image OCR")
-        self.root.geometry("1260x860")
+        self.root.geometry("1260x900")
         self.root.minsize(1000, 700)
         self.items: dict[str, dict] = {}
         self.next_id = 0
@@ -51,10 +50,8 @@ class OCRApp:
         self.resize_job = None
 
         self.mode = tk.StringVar(value="All text in image")
-        self.ocr_profile = tk.StringVar(value="Difficult markings (enhanced)")
-        self.prompt = tk.StringVar(value="rectangular object")
-        self.model = tk.StringVar(value="IDEA-Research/grounding-dino-tiny")
-        self.threshold = tk.StringVar(value="0.30")
+        self.ocr_profile = tk.StringVar(value=PROFILE_LABELS["enhanced"])
+        self.large_budget = tk.StringVar(value="120")
         self.min_area = tk.StringVar(value="0.1")
         self.languages = tk.StringVar(value="en")
         self.device = tk.StringVar(value="auto")
@@ -62,6 +59,9 @@ class OCRApp:
         self.fit_preview = tk.BooleanVar(value=True)
         self.status = tk.StringVar(value="Add images to begin. First analysis may download OCR model weights.")
         self.preview_caption = tk.StringVar(value="No image selected")
+        self.timing_caption = tk.StringVar(value="Select a model result to inspect its text, boxes, and timing.")
+        self.updating_models = False
+        self.expected_models = 1
 
         self._build()
         self._set_controls()
@@ -96,37 +96,24 @@ class OCRApp:
         )
         self.device_combo.grid(row=0, column=5, sticky="w")
 
-        ttk.Label(options, text="Object prompt").grid(row=1, column=0, sticky="w", pady=(8, 0))
-        self.prompt_entry = ttk.Entry(options, textvariable=self.prompt)
-        self.prompt_entry.grid(row=1, column=1, sticky="ew", padx=(0, 16), pady=(8, 0))
-        ttk.Label(options, text="Detection threshold").grid(row=1, column=2, sticky="w", padx=(0, 8), pady=(8, 0))
-        self.threshold_entry = ttk.Entry(options, textvariable=self.threshold, width=9)
-        self.threshold_entry.grid(row=1, column=3, sticky="w", pady=(8, 0))
-        ttk.Label(options, text="Min. shape area (%)").grid(row=1, column=4, sticky="w", padx=(16, 8), pady=(8, 0))
+        ttk.Label(options, text="Min. shape area (%)").grid(row=1, column=2, sticky="w", padx=(0, 8), pady=(8, 0))
         self.area_entry = ttk.Entry(options, textvariable=self.min_area, width=9)
-        self.area_entry.grid(row=1, column=5, sticky="w", pady=(8, 0))
-
-        ttk.Label(options, text="Detection model").grid(row=2, column=0, sticky="w", pady=(8, 0))
-        self.model_entry = ttk.Entry(options, textvariable=self.model)
-        self.model_entry.grid(row=2, column=1, columnspan=4, sticky="ew", padx=(0, 8), pady=(8, 0))
-        self.model_button = ttk.Button(options, text="Choose folder…", command=self._choose_model)
-        self.model_button.grid(row=2, column=5, sticky="ew", pady=(8, 0))
-        ttk.Label(options, text="OCR profile").grid(row=3, column=0, sticky="w", pady=(8, 0))
+        self.area_entry.grid(row=1, column=3, sticky="w", pady=(8, 0))
+        ttk.Label(options, text="Large OCR limit (s)").grid(row=1, column=4, sticky="w", padx=(16, 8), pady=(8, 0))
+        self.budget_entry = ttk.Entry(options, textvariable=self.large_budget, width=9)
+        self.budget_entry.grid(row=1, column=5, sticky="w", pady=(8, 0))
+        ttk.Label(options, text="OCR model").grid(row=1, column=0, sticky="w", pady=(8, 0))
         self.profile_combo = ttk.Combobox(
-            options, textvariable=self.ocr_profile, values=list(OCR_PROFILES), state="readonly", width=32
+            options, textvariable=self.ocr_profile, values=[PROFILE_LABELS[key] for key in OCR_PROFILES], state="readonly", width=38
         )
-        self.profile_combo.grid(row=3, column=1, sticky="ew", padx=(0, 16), pady=(8, 0))
+        self.profile_combo.grid(row=1, column=1, sticky="ew", padx=(0, 16), pady=(8, 0))
         ttk.Label(
             options,
-            text="Enhanced OCR is optimized for English letters/numbers; use original EasyOCR for other languages.",
-            wraplength=580,
-        ).grid(row=3, column=2, columnspan=4, sticky="w", pady=(8, 0))
-        ttk.Label(
-            options,
-            text=("Object prompt uses the detection model. Shape searches use visible outlines. "
-                  "Languages use OCR codes such as en or en,fr."),
+            text=("Enhanced and large OCR support English on CPU. Use baseline for other languages or CUDA. "
+                  "Compare all models uses English and auto/CPU. First-use downloads/loading are timed separately; "
+                  "the large model's limit applies only to image processing (maximum 120 s). Shape searches use visible outlines."),
             wraplength=1100,
-        ).grid(row=4, column=0, columnspan=6, sticky="w", pady=(8, 0))
+        ).grid(row=2, column=0, columnspan=6, sticky="w", pady=(8, 0))
 
         main = ttk.Panedwindow(outer, orient="horizontal")
         main.pack(fill="both", expand=True)
@@ -155,7 +142,9 @@ class OCRApp:
         self.file_tree.bind("<<TreeviewSelect>>", lambda _event: self._show_selected())
         self.analyze_button = ttk.Button(sidebar, text="Analyze all files", command=self._analyze)
         self.analyze_button.pack(fill="x", pady=(10, 5))
-        self.stop_button = ttk.Button(sidebar, text="Stop after current image", command=self._request_stop)
+        self.compare_button = ttk.Button(sidebar, text="Compare all models", command=lambda: self._analyze(compare=True))
+        self.compare_button.pack(fill="x", pady=(0, 5))
+        self.stop_button = ttk.Button(sidebar, text="Stop after current analysis", command=self._request_stop)
         self.stop_button.pack(fill="x")
         self.export_button = ttk.Button(sidebar, text="Export selected results…", command=self._export)
         self.export_button.pack(fill="x", pady=(10, 0))
@@ -193,6 +182,18 @@ class OCRApp:
         ttk.Label(toolbar, text="Results", font=("TkDefaultFont", 11, "bold")).pack(side="left")
         self.copy_button = ttk.Button(toolbar, text="Copy extracted text", command=self._copy_text)
         self.copy_button.pack(side="right")
+        self.model_tree = ttk.Treeview(
+            results_frame, columns=("model", "status", "setup", "analysis", "total"), show="headings", height=3, selectmode="browse"
+        )
+        for column, label, width in (
+            ("model", "Model", 300), ("status", "Status", 85), ("setup", "Startup (s)", 85),
+            ("analysis", "Processing (s)", 100), ("total", "Total (s)", 80),
+        ):
+            self.model_tree.heading(column, text=label)
+            self.model_tree.column(column, width=width, minwidth=60, stretch=column == "model")
+        self.model_tree.pack(fill="x", pady=(0, 4))
+        self.model_tree.bind("<<TreeviewSelect>>", self._select_model)
+        ttk.Label(results_frame, textvariable=self.timing_caption, wraplength=850).pack(anchor="w", pady=(0, 5))
         tabs = ttk.Notebook(results_frame)
         tabs.pack(fill="both", expand=True)
         self.text_output = self._text_tab(tabs, "Extracted text", wrap="word")
@@ -243,20 +244,18 @@ class OCRApp:
         self.mode_combo.configure(state="disabled" if self.busy else "readonly")
         self.profile_combo.configure(state="disabled" if self.busy else "readonly")
         self.device_combo.configure(state="disabled" if self.busy else "readonly")
-        for widget in (self.prompt_entry, self.model_entry, self.model_button, self.threshold_entry):
-            widget.configure(state="normal" if not self.busy and mode == "prompt" else "disabled")
+        self.budget_entry.configure(state=normal)
         self.area_entry.configure(state="normal" if not self.busy and mode in ("rectangles", "triangles") else "disabled")
         self.analyze_button.configure(state="normal" if self.items and not self.busy else "disabled")
+        self.compare_button.configure(state="normal" if self.items and not self.busy else "disabled")
         self.stop_button.configure(state="normal" if self.busy and not self.stop_event.is_set() else "disabled")
         _key, item = self._selected()
         available = bool(item and item.get("payload") is not None and not self.busy)
-        self.export_button.configure(state="normal" if available else "disabled")
+        can_export = bool(item and not self.busy and item.get("image") is not None and (
+            item.get("payload") is not None or item.get("comparison") and item.get("models")
+        ))
+        self.export_button.configure(state="normal" if can_export else "disabled")
         self.copy_button.configure(state="normal" if available else "disabled")
-
-    def _choose_model(self) -> None:
-        folder = filedialog.askdirectory(parent=self.root, title="Choose complete model checkpoint folder")
-        if folder:
-            self.model.set(folder)
 
     def _add_files(self) -> None:
         paths = filedialog.askopenfilenames(
@@ -272,7 +271,10 @@ class OCRApp:
                 continue
             key = str(self.next_id)
             self.next_id += 1
-            self.items[key] = {"path": path, "image": None, "payload": None, "annotated": None, "error": None}
+            self.items[key] = {
+                "path": path, "image": None, "payload": None, "annotated": None, "error": None,
+                "models": {}, "active_profile": None, "comparison": False,
+            }
             self.file_tree.insert("", "end", iid=key, text=path.name, values=("Ready",))
             existing.add(path)
             first_added = first_added or key
@@ -307,26 +309,73 @@ class OCRApp:
 
     def _show_selected(self) -> None:
         _key, item = self._selected()
+        self.updating_models = True
+        try:
+            self.model_tree.delete(*self.model_tree.get_children())
+            if item:
+                if item.get("image") is None and not item.get("error") and not item.get("models"):
+                    try:
+                        item["image"] = load_image(item["path"])
+                    except Exception as exc:
+                        item["error"] = str(exc)
+                for profile in OCR_PROFILES:
+                    row = item.get("models", {}).get(profile)
+                    if row:
+                        self.model_tree.insert("", "end", iid=profile, values=(
+                            row["label"], row["status"], f"{row['model_setup_seconds']:.2f}",
+                            f"{row['analysis_seconds']:.2f}", f"{row['total_seconds']:.2f}",
+                        ))
+                active = item.get("active_profile")
+                if active not in item.get("models", {}):
+                    active = next(iter(item.get("models", {})), None)
+                    item["active_profile"] = active
+                if active:
+                    self.model_tree.selection_set(active)
+        finally:
+            self.updating_models = False
+        self._show_active_result()
+
+    def _select_model(self, _event=None) -> None:
+        if self.updating_models:
+            return
+        _key, item = self._selected()
+        selected = self.model_tree.selection()
+        if item and selected and selected[0] in item.get("models", {}):
+            item["active_profile"] = selected[0]
+            item["annotated"] = None
+            self._show_active_result()
+
+    def _show_active_result(self) -> None:
+        _key, item = self._selected()
         self.region_tree.delete(*self.region_tree.get_children())
         self._replace_text(self.text_output, "")
         self._replace_text(self.json_output, "")
+        self.timing_caption.set("Select a model result to inspect its text, boxes, and timing.")
         if item:
-            if item.get("image") is None and not item.get("error"):
-                try:
-                    item["image"] = load_image(item["path"])
-                except Exception as exc:
-                    item["error"] = str(exc)
-            payload = item.get("payload")
+            row = item.get("models", {}).get(item.get("active_profile"))
+            payload = row.get("payload") if row else None
+            item["payload"] = payload
+            item["annotated"] = None
+            if row:
+                reused = "reused model" if row.get("model_reused") else "first setup for this model"
+                self.timing_caption.set(
+                    f"{row['label']} · {row['status']} · startup {row['model_setup_seconds']:.2f} s · "
+                    f"processing {row['analysis_seconds']:.2f} s · total {row['total_seconds']:.2f} s · {reused}"
+                )
+                self._replace_text(self.json_output, json.dumps(row, indent=2, ensure_ascii=False))
             if payload is not None:
-                text = extracted_text(payload)
+                if payload.get("warnings"):
+                    self.timing_caption.set(self.timing_caption.get() + " · " + " ".join(payload["warnings"]))
+                text = row.get("text", extracted_text(payload))
                 self._replace_text(self.text_output, text or "No text was recognized in the selected search area.")
-                self._replace_text(self.json_output, json.dumps(payload, indent=2, ensure_ascii=False))
                 for region in payload["detections"]:
                     confidence = region.get("confidence")
                     self.region_tree.insert("", "end", values=(
                         region["id"], region["label"],
                         f"{confidence:.2f}" if confidence is not None else "—", region.get("text", ""),
                     ))
+            elif row:
+                self._replace_text(self.text_output, f"Model status: {row['status']}\n\n{row.get('error') or 'No result returned.'}")
             elif item.get("error"):
                 self._replace_text(self.text_output, f"Analysis could not be completed:\n\n{item['error']}")
             else:
@@ -366,69 +415,91 @@ class OCRApp:
         count = f" · {len(payload['detections'])} region(s)" if payload is not None else ""
         self.preview_caption.set(f"{item['path'].name} · {source.width} × {source.height}{count}")
 
-    def _options(self) -> AnalysisOptions:
+    def _options(self, compare: bool = False) -> AnalysisOptions:
         mode = MODES[self.mode.get()]
-        profile = OCR_PROFILES[self.ocr_profile.get()]
+        profile = next(key for key, label in PROFILE_LABELS.items() if label == self.ocr_profile.get())
         languages = tuple(code.strip() for code in self.languages.get().split(",") if code.strip())
         if not languages:
             raise ValueError("Enter at least one OCR language code, such as en.")
-        if profile == "enhanced" and languages != ("en",):
+        if (compare or profile != "baseline") and languages != ("en",):
             raise ValueError(
-                "Enhanced OCR supports English letters/numbers only. "
-                "Set Languages to en or choose Original EasyOCR (baseline) for other languages."
+                "Enhanced/large OCR and model comparison support English only. "
+                "Set Languages to en or choose the baseline model for other languages."
             )
-        threshold = float(self.threshold.get()) if mode == "prompt" else 0.30
+        if (compare or profile != "baseline") and self.device.get() == "cuda":
+            raise ValueError("Enhanced/large OCR and model comparison use CPU. Choose auto/cpu, or baseline for CUDA OCR.")
         area_ratio = float(self.min_area.get()) / 100 if mode in ("rectangles", "triangles") else 0.001
-        if not 0 <= threshold <= 1:
-            raise ValueError("Detection threshold must be between 0 and 1.")
         if not 0 < area_ratio <= 1:
             raise ValueError("Minimum shape area must be greater than 0 and at most 100 percent.")
-        if mode == "prompt" and not self.prompt.get().strip():
-            raise ValueError("Enter an object prompt, such as rectangular sign.")
-        if mode == "prompt" and not self.model.get().strip():
-            raise ValueError("Choose a model folder or enter a model ID.")
-        return AnalysisOptions(
-            mode=mode, prompt=self.prompt.get().strip() if mode == "prompt" else "",
-            threshold=threshold, languages=languages, device=self.device.get(),
-            model=self.model.get().strip(), min_area_ratio=area_ratio, ocr_profile=profile,
+        budget = float(self.large_budget.get())
+        if not 0 < budget <= 120:
+            raise ValueError("Large model processing limit must be greater than 0 and at most 120 seconds.")
+        options = AnalysisOptions(
+            mode=mode, languages=languages, device=self.device.get(),
+            min_area_ratio=area_ratio, ocr_profile=profile, large_max_seconds=budget,
         )
+        options.validate()
+        return options
 
-    def _analyze(self) -> None:
+    def _analyze(self, compare: bool = False) -> None:
         try:
-            options = self._options()
+            options = self._options(compare=compare)
         except (ValueError, TypeError) as exc:
             messagebox.showerror("Check analysis settings", str(exc), parent=self.root)
             return
         self.busy = True
         self.stop_event.clear()
+        self.expected_models = len(OCR_PROFILES) if compare else 1
         tasks = [(key, item["path"]) for key, item in self.items.items()]
         for key, item in self.items.items():
-            item.update(image=None, payload=None, annotated=None, error=None)
+            item.update(
+                image=None, payload=None, annotated=None, error=None, models={}, active_profile=None,
+                comparison=compare, mode=options.mode, large_max_seconds=options.large_max_seconds,
+            )
             self.file_tree.set(key, "status", "Queued")
         self._show_selected()
         self.progress.start(12)
-        self.status.set("Starting analysis. The first run may download OCR model weights.")
-        threading.Thread(target=self._worker, args=(tasks, options), daemon=True).start()
+        self.status.set("Starting analysis. First-use model downloads/loading are measured separately from processing.")
+        threading.Thread(target=self._worker, args=(tasks, options, compare), daemon=True).start()
 
-    def _worker(self, tasks: list[tuple[str, Path]], options: AnalysisOptions) -> None:
-        succeeded = failed = 0
-        for key, path in tasks:
-            if self.stop_event.is_set():
-                break
-            self.events.put(("running", key, path.name))
+    def _worker(self, tasks: list[tuple[str, Path]], options: AnalysisOptions, compare: bool = False) -> None:
+        counts = {"ok": 0, "error": 0, "timeout": 0}
+        profiles = OCR_PROFILES if compare else (options.ocr_profile,)
+        try:
+            # Model-first order reuses one loaded model across every queued image.
+            for profile in profiles:
+                for key, path in tasks:
+                    if self.stop_event.is_set():
+                        break
+                    self.events.put(("running", key, f"{path.name} / {PROFILE_LABELS[profile]}"))
+                    image = None
+                    start = time.perf_counter()
+                    try:
+                        image = load_image(path)
+                        row = run_model(
+                            image, replace(options, ocr_profile=profile, device="cpu" if compare else options.device), self.engine,
+                            progress=lambda message, name=path.name: self.events.put(("progress", f"{name}: {message}")),
+                        )
+                        if row.get("payload") is not None:
+                            row["payload"]["image"] = str(path)
+                    except Exception as exc:
+                        row = {
+                            "profile": profile, "label": PROFILE_LABELS[profile], "status": "error",
+                            "total_seconds": time.perf_counter() - start, "model_setup_seconds": 0.0,
+                            "analysis_seconds": 0.0, "model_reused": False, "text": "", "payload": None,
+                            "error": f"{type(exc).__name__}: {exc}",
+                        }
+                    counts[row["status"]] += 1
+                    self.events.put(("model_done", key, image, row))
+                if self.stop_event.is_set():
+                    break
+        finally:
             try:
-                image = load_image(path)
-                payload = self.engine.analyze(
-                    image, options,
-                    progress=lambda message, name=path.name: self.events.put(("progress", f"{name}: {message}")),
-                )
-                payload["image"] = str(path)
-                self.events.put(("done", key, image, payload))
-                succeeded += 1
+                self.engine.close()
             except Exception as exc:
-                self.events.put(("error", key, str(exc)))
-                failed += 1
-        self.events.put(("complete", succeeded, failed, self.stop_event.is_set()))
+                self.events.put(("progress", f"Model cleanup: {exc}"))
+            finally:
+                self.events.put(("complete", counts, self.stop_event.is_set()))
 
     def _poll_events(self) -> None:
         try:
@@ -440,26 +511,29 @@ class OCRApp:
                     self.status.set(f"Analyzing {event[2]}…")
                 elif kind == "progress":
                     self.status.set(event[1])
-                elif kind == "done":
-                    _kind, key, image, payload = event
-                    self.items[key].update(image=image, payload=payload, annotated=None, error=None)
-                    self.file_tree.set(key, "status", "Complete")
-                    if self._selected()[0] == key:
-                        self._show_selected()
-                elif kind == "error":
-                    _kind, key, error = event
-                    self.items[key].update(image=None, payload=None, annotated=None, error=error)
-                    self.file_tree.set(key, "status", "Error")
+                elif kind == "model_done":
+                    _kind, key, image, row = event
+                    item = self.items[key]
+                    item.update(image=image, payload=None, annotated=None, error=row.get("error"))
+                    item["models"][row["profile"]] = row
+                    if item.get("active_profile") is None:
+                        item["active_profile"] = row["profile"]
+                    completed = len(item["models"])
+                    status = f"{completed}/{self.expected_models} models" if completed < self.expected_models else (
+                        "Complete" if all(result["status"] == "ok" for result in item["models"].values()) else "Review"
+                    )
+                    self.file_tree.set(key, "status", status)
                     if self._selected()[0] == key:
                         self._show_selected()
                 elif kind == "complete":
                     self.busy = False
                     self.progress.stop()
                     for key in self.items:
-                        if self.file_tree.set(key, "status") == "Queued":
+                        if len(self.items[key]["models"]) < self.expected_models:
                             self.file_tree.set(key, "status", "Stopped")
-                    prefix = "Stopped" if event[3] else "Finished"
-                    self.status.set(f"{prefix}: {event[1]} completed, {event[2]} failed. Select an image to inspect or export its results.")
+                    prefix = "Stopped" if event[2] else "Finished"
+                    counts = event[1]
+                    self.status.set(f"{prefix}: {counts['ok']} completed, {counts['error']} failed, {counts['timeout']} timed out. Select a model row to inspect or export its result.")
                     self._set_controls()
         except queue.Empty:
             pass
@@ -467,7 +541,7 @@ class OCRApp:
 
     def _request_stop(self) -> None:
         self.stop_event.set()
-        self.status.set("Stopping after the current image completes…")
+        self.status.set("Stopping after the current model/image analysis completes…")
         self._set_controls()
 
     def _copy_text(self) -> None:
@@ -479,7 +553,7 @@ class OCRApp:
 
     def _export(self) -> None:
         _key, item = self._selected()
-        if not item or item.get("payload") is None:
+        if not item or item.get("image") is None or not (item.get("payload") is not None or item.get("comparison") and item.get("models")):
             return
         folder = filedialog.askdirectory(parent=self.root, title="Choose export location")
         if not folder:
@@ -493,11 +567,23 @@ class OCRApp:
                     "Replace exported results?", f"Replace the output files in\n{target}?", parent=self.root
                 ):
                     return
-            save_outputs(item["image"], item["payload"], target)
+            if item.get("comparison"):
+                rows = [item["models"][profile] for profile in OCR_PROFILES if profile in item["models"]]
+                report = {
+                    "image": str(item["path"]), "models": rows,
+                    "device": "cpu",
+                    "image_size": list(item["image"].size), "mode": item.get("mode", "all"),
+                    "large_inference_budget_seconds": item.get("large_max_seconds", 120.0),
+                    "wall_seconds": sum(row["total_seconds"] for row in rows),
+                    "timing_scope": "Sum of sequential model/image times; other images in the batch are excluded.",
+                }
+                save_comparison(item["image"], report, target)
+            else:
+                save_outputs(item["image"], item["payload"], target)
         except Exception as exc:
             messagebox.showerror("Export failed", str(exc), parent=self.root)
             return
-        self.status.set(f"Saved annotated.png, results.json, and text.txt to {target}")
+        self.status.set(f"Saved {'comparison.json and model subfolders' if item.get('comparison') else 'annotated.png, results.json, and text.txt'} to {target}")
 
     def _close(self) -> None:
         if self.busy and not messagebox.askyesno(
@@ -505,7 +591,10 @@ class OCRApp:
         ):
             return
         self.stop_event.set()
-        self.root.destroy()
+        try:
+            self.engine.close()
+        finally:
+            self.root.destroy()
 
 
 def launch_gui() -> None:
@@ -515,4 +604,6 @@ def launch_gui() -> None:
 
 
 if __name__ == "__main__":
+    from multiprocessing import freeze_support
+    freeze_support()
     launch_gui()

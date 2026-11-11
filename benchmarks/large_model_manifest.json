@@ -1,0 +1,39 @@
+{
+  "model_repository": "florence-community/Florence-2-large-ft",
+  "revision": "26b734a54fdfbf9c398351eedfabb7f27fc470b7",
+  "upstream": "microsoft/Florence-2-large-ft",
+  "license": "MIT",
+  "parameters": 770213888,
+  "weights": {
+    "file": "model.safetensors",
+    "bytes": 1540958064,
+    "sha256": "58a76f4be257b0dd03ddd6b16c2bb05f4e1910c550047c8fbc4d85de638c619e"
+  },
+  "loading": {
+    "native_transformers": "4.57.6",
+    "trust_remote_code": false,
+    "use_safetensors": true,
+    "cpu_dtype": "float32",
+    "attention": "sdpa",
+    "cpu_threads_max": 4,
+    "task": "<OCR_WITH_REGION>",
+    "max_new_tokens": 512,
+    "beams": 1
+  },
+  "tested_environment": {
+    "torch": "2.7.1+cpu",
+    "torchvision": "0.22.1+cpu",
+    "peak_process_memory_mib_approx": 4770
+  },
+  "time_limits": {
+    "processing_seconds_default": 120,
+    "processing_seconds_max": 120,
+    "startup_seconds": 600,
+    "enforcement": "Terminate isolated native inference process; processing budget excludes startup/download."
+  },
+  "sources": [
+    "https://huggingface.co/florence-community/Florence-2-large-ft",
+    "https://huggingface.co/microsoft/Florence-2-large-ft",
+    "https://huggingface.co/docs/transformers/v4.57.1/model_doc/florence2"
+  ]
+}
