@@ -68,6 +68,90 @@ class OCRApp:
         self.root.after(80, self._poll_events)
         self.root.protocol("WM_DELETE_WINDOW", self._close)
 
+    def _export_all_results(self) -> None:
+        if not any(item.get("models") for item in self.items.values()):
+            return
+
+        filename = filedialog.asksaveasfilename(
+            parent=self.root,
+            title="Save OCR Results",
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json")],
+            initialfile="ocr_all_results.json",
+        )
+
+        if not filename:
+            return
+
+        try:
+            report = {
+                "export_type": "ocr_batch_results",
+                "image_count": len(
+                    [i for i in self.items.values() if i.get("models")]
+                ),
+                "images": [],
+            }
+
+            for item in self.items.values():
+
+                if not item.get("models"):
+                    continue
+
+                image_entry = {
+                    "image": str(item["path"]),
+                    "mode": item.get("mode"),
+                    "image_size": (
+                        list(item["image"].size)
+                        if item.get("image")
+                        else None
+                    ),
+                    "models": [],
+                }
+
+                for profile in OCR_PROFILES:
+
+                    if profile not in item["models"]:
+                        continue
+
+                    row = item["models"][profile]
+
+                    model_entry = {
+                        "profile": row["profile"],
+                        "label": row["label"],
+                        "status": row["status"],
+                        "startup_seconds": row["model_setup_seconds"],
+                        "processing_seconds": row["analysis_seconds"],
+                        "total_seconds": row["total_seconds"],
+                        "model_reused": row["model_reused"],
+                        "text": row.get("text"),
+                        "error": row.get("error"),
+                        "payload": row.get("payload"),
+                    }
+
+                    image_entry["models"].append(model_entry)
+
+                report["images"].append(image_entry)
+
+            Path(filename).write_text(
+                json.dumps(
+                    report,
+                    indent=2,
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            self.status.set(
+                f"Saved all OCR results to {filename}"
+            )
+
+        except Exception as exc:
+            messagebox.showerror(
+                "Export failed",
+                str(exc),
+                parent=self.root,
+            )
+
     def _build(self) -> None:
         outer = ttk.Frame(self.root, padding=12)
         outer.pack(fill="both", expand=True)
@@ -148,6 +232,11 @@ class OCRApp:
         self.stop_button.pack(fill="x")
         self.export_button = ttk.Button(sidebar, text="Export selected results…", command=self._export)
         self.export_button.pack(fill="x", pady=(10, 0))
+
+        self.export_all_button = ttk.Button(sidebar,text="Export all results…",command=self._export_all_results,)
+
+        self.export_all_button.pack(fill="x", pady=(5, 0))
+
 
         viewer = ttk.Panedwindow(main, orient="vertical")
         main.add(viewer, weight=4)
@@ -237,6 +326,10 @@ class OCRApp:
         return key, self.items.get(key)
 
     def _set_controls(self) -> None:
+        has_results = (not self.busy and any(item.get("models") for item in self.items.values()))
+
+        self.export_all_button.configure(state="normal" if has_results else "disabled")
+        
         mode = MODES[self.mode.get()]
         normal = "disabled" if self.busy else "normal"
         for widget in (self.add_button, self.language_entry, self.remove_button, self.clear_button):
