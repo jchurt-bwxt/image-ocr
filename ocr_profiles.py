@@ -1,6 +1,6 @@
 """OCR choices shared by the desktop interface, CLI, and comparison runner."""
 
-OCR_PROFILES = ("baseline", "enhanced", "large")
+OCR_PROFILES = ("baseline", "large")
 PROFILE_LABELS = {
     "baseline": "EasyOCR (small / baseline)",
     "enhanced": "RapidOCR PP-OCRv6 (enhanced)",
