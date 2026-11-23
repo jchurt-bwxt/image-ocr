@@ -109,8 +109,8 @@ def load_labels(label_file):
 # ======================================================
 
 def evaluate(
-    results_json="ocr_all_results.json",
-    labels_file="ocr_labels.txt"
+    results_json=".\results\ocr_all_results.json",
+    labels_file=".\labels\ocr_labels.txt"
 ):
 
     # --------------------------------------------------
@@ -347,6 +347,6 @@ def evaluate(
 if __name__ == "__main__":
 
     evaluate(
-        results_json="ocr_all_results.json",
-        labels_file="ocr_labels.txt"
+        results_json=r".\results\ocr_all_results.json",
+        labels_file=r".\labels\ocr_labels.txt"
     )
